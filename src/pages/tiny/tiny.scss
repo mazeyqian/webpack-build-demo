@@ -1,0 +1,92 @@
+// 在父元素字体大小为 16px 的容器内绘制图形交互
+@function pxToEm ($px) {
+  @return ($px/16) + em;
+}
+
+.tiny-box {
+  width: 100%;
+  padding: 20px;
+  font-weight: 400;
+  font-family: Arial;
+  font-size: 16px;
+  box-sizing: border-box;
+
+  div, input {
+    box-sizing: border-box;
+  }
+
+  input, button {
+    font-size: pxToEm(16);
+  }
+
+  button {
+    font-weight: 400;
+    text-align: center;
+    color: #fff;
+    background: #1890ff;
+    border-color: #1890ff;
+    box-shadow: 0 pxToEm(2) 0 rgba(0, 0, 0, 0.045);
+    text-shadow: 0 pxToEm(-1) 0 rgba(0, 0, 0, 0.12);
+    outline: 0;
+    border: pxToEm(1) solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: pxToEm(3) pxToEm(15);
+    border-radius: pxToEm(2);
+
+    &:hover {
+      background: #40a9ff;
+      border-color: #40a9ff;
+    }
+  }
+
+  input {
+    margin: 0;
+    font-variant: tabular-nums;
+    list-style: none;
+    min-width: 0;
+    padding: pxToEm(4) pxToEm(11);
+    color: rgba(0, 0, 0, 0.85);
+    background-color: #fff;
+    background-image: none;
+    border: pxToEm(1) solid #d9d9d9;
+    border-radius: pxToEm(2);
+    transition: all 0.3s;
+
+    &:focus {
+      border-color: #40a9ff;
+      outline: 0;
+      box-shadow: 0 0 0 pxToEm(2) rgba(24, 144, 255, 0.2);
+    }
+  }
+
+  .generate {
+    display: flex;
+    justify-content: space-between;
+
+    >input {
+      margin-right: pxToEm(16);
+      flex: 1 0 auto;
+    }
+  }
+
+  .result-show {
+    padding: pxToEm(24);
+    background: #fff;
+    border-radius: pxToEm(2);
+    color: rgba(0, 0, 0, 0.85);
+    border: pxToEm(1) solid #f0f0f0;
+    margin-top: pxToEm(20);
+    display: flex;
+
+    .copied {
+      color: #28a745;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    a, input, button {
+      margin-right: pxToEm(10);
+    }
+  }
+}
