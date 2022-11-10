@@ -6,14 +6,19 @@
   "scripts": {
     "build:index": "cross-env ENTRY=index ENTRY_PATH=./src/pages/index/ webpack --config webpack.config.js",
     "build:tiny": "cross-env ENTRY=tiny ENTRY_PATH=./src/pages/tiny/ webpack --config webpack.config.js",
+    "lint-and-fix": "eslint ./src/**/*.js --ext 'js' --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mazeyqian/webpack-build-demo.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Mazey Chu",
+    "email": "mazeyqian@gmail.com",
+    "url": "https://blog.mazey.net"
+  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mazeyqian/webpack-build-demo/issues"
   },

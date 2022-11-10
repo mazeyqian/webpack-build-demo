@@ -27,7 +27,7 @@ module.exports = {
     'generator-star-spacing': 'off', // 关闭
 
     semi: ['error', 'always'], // 使用分号
-    'no-unused-vars': ['warn', 'always'], // 未使用变量
+    // 'no-unused-vars': ['warn', 'always'], // 未使用变量
     // 最大长度 120
     'max-len': [
       'warn',

@@ -17,25 +17,25 @@ const Tiny = () => {
   }, []);
 
   const fetchShortLink = () => {
-    let real_ori_link = ori_link
+    let real_ori_link = ori_link;
     if (!ori_link.includes('http')) {
-      real_ori_link = `http://${ori_link}`
+      real_ori_link = `http://${ori_link}`;
     }
     // console.log('real_ori_link', real_ori_link)
     axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
       // console.log('fetchShortLink', res)
-      const { data: { data: { tiny_link } } } = res
-      setTinyLink(tiny_link)
-      setCopied(false)
-    })
-  }
+      const { data: { data: { tiny_link } } } = res;
+      setTinyLink(tiny_link);
+      setCopied(false);
+    });
+  };
 
   const inputChange = ({ target: { value: ori_link } }) => {
     // console.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
-    setOriLink(ori_link)
-  }
+    setOriLink(ori_link);
+  };
 
   return (
     <div className='tiny-box'>
@@ -50,11 +50,11 @@ const Tiny = () => {
         }
         {/* 复制按钮 */}
         {
-          tiny_link ?
-          <CopyToClipboard onCopy={() => setCopied(true)} text={tiny_link}>
-            <button>复制</button>
-          </CopyToClipboard> :
-          ''
+          tiny_link
+            ? <CopyToClipboard onCopy={() => setCopied(true)} text={tiny_link}>
+              <button>复制</button>
+            </CopyToClipboard>
+            : ''
         }
         {/* 提示 */}
         {
@@ -62,7 +62,7 @@ const Tiny = () => {
         }
       </div>
     </div>
-  )
-}
+  );
+};
 
-ReactDom.render(<Tiny />, document.getElementById('tiny-box'))
+ReactDom.render(<Tiny />, document.getElementById('tiny-box'));
