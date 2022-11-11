@@ -5,13 +5,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const ENTRY = process.env.ENTRY;
 console.log(`ENTRY: ${ENTRY}`);
-const ENTRY_PATH = process.env.ENTRY_PATH || './src/';
+const ENTRY_PATH = `./src/pages/${ENTRY}/` || './src/';
 console.log(`ENTRY_PATH: ${ENTRY_PATH}`);
 
 module.exports = {
   mode: 'production',
   entry: {
-    [ENTRY]: `${ENTRY_PATH}${ENTRY}.js`
+    [ENTRY]: `${ENTRY_PATH}index.js`
   },
   output: {
     filename: '[name].js',
@@ -22,7 +22,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel-loader"
+        loader: 'babel-loader'
       },
       {
         test: /\.s[ac]ss$/i,
@@ -31,7 +31,7 @@ module.exports = {
           // Do not use together style-loader and mini-css-extract-plugin.
           // "style-loader",
           // https://stackoverflow.com/questions/52571793/error-in-using-the-webpack-mini-css-extract-plugin-plugin
-          // mini-css-extract-plugin's loader only takes the output of css-loader as its input. 
+          // mini-css-extract-plugin's loader only takes the output of css-loader as its input.
           {
             loader: MiniCssExtractPlugin.loader,
           },
@@ -41,10 +41,10 @@ module.exports = {
             // options: { modules: true },
           },
           {
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
               // Prefer `dart-sass`
-              implementation: require("sass"),
+              implementation: require('sass'),
             },
           },
         ],
