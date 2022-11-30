@@ -7,6 +7,7 @@
     "build:index": "cross-env ENTRY=index webpack --config webpack.config.js",
     "build:tiny": "cross-env ENTRY=tiny webpack --config webpack.config.js",
     "build:cdn": "cross-env ENTRY=cdn webpack --config webpack.config.js",
+    "build:obfuscator": "cross-env ENTRY=obfuscator webpack --config webpack.config.js",
     "lint-and-fix": "eslint ./src/**/*.js --ext 'js' --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

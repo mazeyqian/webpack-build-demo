@@ -8,6 +8,24 @@ console.log(`ENTRY: ${ENTRY}`);
 const ENTRY_PATH = `./src/pages/${ENTRY}/` || './src/';
 console.log(`ENTRY_PATH: ${ENTRY_PATH}`);
 
+const plugins = [
+  new MiniCssExtractPlugin({
+    // Options similar to the same options in webpackOptions.output
+    // both options are optional
+    // filename: `../style.min.css`
+    filename: `${ENTRY}.css`,
+  }),
+  new HtmlWebpackPlugin({
+    filename: path.resolve(__dirname, `lib/${ENTRY}.html`),
+    template: path.resolve(__dirname, `${ENTRY_PATH}index.html`),
+    inject: true,
+    chunksSortMode: 'auto'
+  }),
+  new CleanWebpackPlugin({
+    cleanOnceBeforeBuildPatterns: ['lib'],
+  }),
+]
+
 module.exports = {
   mode: 'production',
   entry: {
@@ -51,21 +69,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      // filename: `../style.min.css`
-      filename: `${ENTRY}.css`,
-    }),
-    new HtmlWebpackPlugin({
-      filename: path.resolve(__dirname, `lib/${ENTRY}.html`),
-      template: path.resolve(__dirname, `${ENTRY_PATH}index.html`),
-      inject: true,
-      chunksSortMode: 'auto'
-    }),
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['lib'],
-    }),
-  ],
+  plugins,
 };
