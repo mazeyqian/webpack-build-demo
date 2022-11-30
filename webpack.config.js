@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebpackObfuscator = require('webpack-obfuscator');
 
 const ENTRY = process.env.ENTRY;
 console.log(`ENTRY: ${ENTRY}`);
@@ -24,7 +25,16 @@ const plugins = [
   new CleanWebpackPlugin({
     cleanOnceBeforeBuildPatterns: ['lib'],
   }),
-]
+];
+
+if (ENTRY === 'obfuscator') {
+  plugins.push(
+    new WebpackObfuscator({
+      rotateStringArray: true,
+      stringArrayEncoding: ['base64'],
+    }, ['excluded_bundle_name.js'])
+  );
+}
 
 module.exports = {
   mode: 'production',
