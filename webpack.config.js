@@ -29,6 +29,7 @@ const plugins = [
 
 if (ENTRY === 'obfuscator') {
   plugins.push(
+    // https://github.com/javascript-obfuscator/javascript-obfuscator#options
     new WebpackObfuscator({
       rotateStringArray: true,
       stringArrayEncoding: ['base64'],
