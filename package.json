@@ -55,6 +55,7 @@
     "mazey": "^3.3.4",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sha1": "^1.1.1"
   }
 }
