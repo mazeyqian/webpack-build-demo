@@ -2,11 +2,40 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebpackObfuscator = require('webpack-obfuscator');
 
 const ENTRY = process.env.ENTRY;
 console.log(`ENTRY: ${ENTRY}`);
 const ENTRY_PATH = `./src/pages/${ENTRY}/` || './src/';
 console.log(`ENTRY_PATH: ${ENTRY_PATH}`);
+
+const plugins = [
+  new MiniCssExtractPlugin({
+    // Options similar to the same options in webpackOptions.output
+    // both options are optional
+    // filename: `../style.min.css`
+    filename: `${ENTRY}.css`,
+  }),
+  new HtmlWebpackPlugin({
+    filename: path.resolve(__dirname, `lib/${ENTRY}.html`),
+    template: path.resolve(__dirname, `${ENTRY_PATH}index.html`),
+    inject: true,
+    chunksSortMode: 'auto'
+  }),
+  new CleanWebpackPlugin({
+    cleanOnceBeforeBuildPatterns: ['lib'],
+  }),
+];
+
+if (ENTRY === 'obfuscator') {
+  plugins.push(
+    // https://github.com/javascript-obfuscator/javascript-obfuscator#options
+    new WebpackObfuscator({
+      rotateStringArray: true,
+      stringArrayEncoding: ['base64'],
+    }, ['excluded_bundle_name.js'])
+  );
+}
 
 module.exports = {
   mode: 'production',
@@ -51,21 +80,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      // filename: `../style.min.css`
-      filename: `${ENTRY}.css`,
-    }),
-    new HtmlWebpackPlugin({
-      filename: path.resolve(__dirname, `lib/${ENTRY}.html`),
-      template: path.resolve(__dirname, `${ENTRY_PATH}index.html`),
-      inject: true,
-      chunksSortMode: 'auto'
-    }),
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['lib'],
-    }),
-  ],
+  plugins,
 };
