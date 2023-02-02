@@ -1,19 +1,19 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import React, { Component, useState, useEffect } from 'react';
 import ReactDom from 'react-dom';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './tiny.scss';
 
-console.log('tiny');
 const domain = 'https://mazey.cn';
-
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    console.log('12345');
+    console.log('tiny');
     // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
   }, []);
