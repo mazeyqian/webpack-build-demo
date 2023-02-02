@@ -1,6 +1,6 @@
 // 在父元素字体大小为 16px 的容器内绘制图形交互
 @function pxToEm ($px) {
-  @return ($px/16) + em;
+  @return calc($px / 16) * 1em;
 }
 
 .tiny-box {
@@ -44,7 +44,7 @@
     margin: 0;
     font-variant: tabular-nums;
     list-style: none;
-    min-width: 0;
+    min-width: pxToEm(200);
     padding: pxToEm(4) pxToEm(11);
     color: rgba(0, 0, 0, 0.85);
     background-color: #fff;
@@ -52,6 +52,7 @@
     border: pxToEm(1) solid #d9d9d9;
     border-radius: pxToEm(2);
     transition: all 0.3s;
+    width: pxToEm(200);
 
     &:focus {
       border-color: #40a9ff;
@@ -71,13 +72,14 @@
   }
 
   .result-show {
-    padding: pxToEm(24);
+    padding: pxToEm(24) pxToEm(24) pxToEm(12) pxToEm(24);
     background: #fff;
     border-radius: pxToEm(2);
     color: rgba(0, 0, 0, 0.85);
     border: pxToEm(1) solid #f0f0f0;
     margin-top: pxToEm(20);
     display: flex;
+    flex-wrap: wrap;
 
     .copied {
       color: #28a745;
@@ -85,8 +87,9 @@
       align-items: center;
     }
 
-    a, input, button {
+    a, input, button, span {
       margin-right: pxToEm(10);
+      margin-bottom: pxToEm(12);
     }
   }
 }

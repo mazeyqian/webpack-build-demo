@@ -38,7 +38,6 @@ if (ENTRY === 'obfuscator') {
 }
 
 module.exports = {
-  mode: 'production',
   entry: {
     [ENTRY]: `${ENTRY_PATH}index.js`
   },

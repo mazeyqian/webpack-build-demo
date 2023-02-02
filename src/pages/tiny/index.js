@@ -4,6 +4,7 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './tiny.scss';
 
+console.log('tiny');
 const domain = 'https://mazey.cn';
 
 const Tiny = () => {
@@ -12,6 +13,7 @@ const Tiny = () => {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    console.log('12345');
     // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
   }, []);
