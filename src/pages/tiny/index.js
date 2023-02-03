@@ -5,6 +5,7 @@ import ReactDom from 'react-dom';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './tiny.scss';
+import { addStyle } from 'mazey';
 
 const domain = 'https://mazey.cn';
 const Tiny = () => {
@@ -67,4 +68,34 @@ const Tiny = () => {
   );
 };
 
-ReactDom.render(<Tiny />, document.getElementById('tiny-box'));
+// Example: TinyInit('#tiny-box', { isGrayBackground: true });
+const TinyInit = (selector = '', options = {
+  isGrayBackground: false,
+}) => {
+  if (!selector) {
+    return;
+  }
+  const { isGrayBackground } = options;
+  const container = document.querySelector(selector);
+
+  if (container) {
+    ReactDom.render(<Tiny />, container);
+
+    if (isGrayBackground) {
+      addStyle(
+        `
+          #tiny-box {
+            background-color: #eee;
+            border-radius: 4px;
+          }
+        `
+      );
+    }
+  }
+};
+
+TinyInit('#tiny-box');
+
+window.TINY_INIT = TinyInit;
+
+// ReactDom.render(<Tiny />, document.getElementById('tiny-box'));
