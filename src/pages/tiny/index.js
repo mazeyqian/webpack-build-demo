@@ -7,8 +7,9 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle } from 'mazey';
+import { addStyle, genCustomConsole } from 'mazey';
 
+const TinyLog = genCustomConsole('TinyLog:', { showDate: true });
 const domain = 'https://mazey.cn';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
@@ -17,7 +18,7 @@ const Tiny = () => {
   const [backupTinyLink, setBackupTinyLink] = useState('');
 
   useEffect(() => {
-    console.log('tiny');
+    TinyLog.log('tiny');
     // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
   }, []);
@@ -27,7 +28,7 @@ const Tiny = () => {
       ori_link: oriLink,
     })
       .then(res => {
-        console.log('res.data.tiny_link', res.data.tiny_link);
+        TinyLog.log('res.data.tiny_link', res.data.tiny_link);
         return res.data.tiny_link;
       });
   };
@@ -37,25 +38,25 @@ const Tiny = () => {
     if (!ori_link.includes('http')) {
       real_ori_link = `http://${ori_link}`;
     }
-    // console.log('real_ori_link', real_ori_link)
+    // TinyLog.log('real_ori_link', real_ori_link)
     axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
-      // console.log('fetchShortLink', res)
+      // TinyLog.log('fetchShortLink', res)
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
       setCopied(false);
     });
     // Backup
     const backupTinyLink = await getTinyLink(real_ori_link);
-    console.log('backupTinyLink', backupTinyLink);
+    TinyLog.log('backupTinyLink', backupTinyLink);
     if (backupTinyLink) {
       setBackupTinyLink(backupTinyLink);
     }
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
-    // console.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
+    // TinyLog.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
     setOriLink(ori_link);
   };
 

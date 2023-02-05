@@ -1,8 +1,8 @@
 module.exports = {
   root: true, // 指定跟路径
   parserOptions: {
-    sourceType: 'module', // ECMAScript模块
-    ecmaVersion: 6, // js版本
+    sourceType: 'module', // ECMAScript 模块
+    ecmaVersion: 9, // JavaScript 版本，https://eslint.org/docs/latest/use/configure/language-options
     parser: 'babel-eslint' // 解析器
   },
   env: {
