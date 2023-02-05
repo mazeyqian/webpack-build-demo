@@ -3,11 +3,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackObfuscator = require('webpack-obfuscator');
+const { genCustomConsole } = require('mazey');
 
+const WebpackLog = genCustomConsole('WebpackLog:');
 const ENTRY = process.env.ENTRY;
-console.log(`ENTRY: ${ENTRY}`);
+WebpackLog.log(`ENTRY ${ENTRY}`);
 const ENTRY_PATH = `./src/pages/${ENTRY}/` || './src/';
-console.log(`ENTRY_PATH: ${ENTRY_PATH}`);
+WebpackLog.log(`ENTRY_PATH ${ENTRY_PATH}`);
 
 const plugins = [
   new MiniCssExtractPlugin({
@@ -28,6 +30,7 @@ const plugins = [
 ];
 
 if (ENTRY === 'obfuscator') {
+  WebpackLog.log('obfuscator');
   plugins.push(
     // https://github.com/javascript-obfuscator/javascript-obfuscator#options
     new WebpackObfuscator({

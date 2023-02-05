@@ -5,5 +5,5 @@ A Demo.
 ## Install
 
 ```
-git clone git@github.com:mazeyqian/webpack-build-demo.git polestar
+git clone https://github.com/mazeyqian/webpack-build-demo.git polestar
 ```
