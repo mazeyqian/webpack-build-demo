@@ -1,16 +1,17 @@
 // 在父元素字体大小为 16px 的容器内绘制图形交互
+$TinyBoxSize: 16px;
 @function pxToEm ($px) {
   @return calc($px / 16) * 1em;
 }
 
 .tiny-box {
   width: 100%;
-  padding: 20px;
   font-weight: 400;
   font-family: Arial;
-  font-size: 16px;
+  font-size: $TinyBoxSize; // 16px;
   box-sizing: border-box;
   color: #111111;
+  padding: pxToEm(20); // 20px;
 
   div, input {
     box-sizing: border-box;

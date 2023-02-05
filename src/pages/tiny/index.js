@@ -28,14 +28,23 @@ const Tiny = () => {
       ori_link: oriLink,
     })
       .then(res => {
-        TinyLog.log('res.data.tiny_link', res.data.tiny_link);
+        TinyLog.log('Tiny Link', res.data.tiny_link);
         return res.data.tiny_link;
       });
+  };
+
+  const hashCodeToLink = hashCode => {
+    if (typeof hashCode === 'string' && hashCode.length <= 4) {
+      const link = `https://mazey.cn/t/${hashCode}`;
+      TinyLog.log('link', link);
+      window.open(link);
+    }
   };
 
   const fetchShortLink = async () => {
     let real_ori_link = ori_link;
     if (!ori_link.includes('http')) {
+      hashCodeToLink(real_ori_link);
       real_ori_link = `http://${ori_link}`;
     }
     // TinyLog.log('real_ori_link', real_ori_link)
@@ -49,7 +58,7 @@ const Tiny = () => {
     });
     // Backup
     const backupTinyLink = await getTinyLink(real_ori_link);
-    TinyLog.log('backupTinyLink', backupTinyLink);
+    TinyLog.log('Backup Tiny Link', backupTinyLink);
     if (backupTinyLink) {
       setBackupTinyLink(backupTinyLink);
     }
@@ -91,7 +100,7 @@ const Tiny = () => {
         backupTinyLink
           ? <div className='generated-result'>
             <span>备用链接：</span>
-            <a href={backupTinyLink} target='_blank'>{backupTinyLink}</a>
+            <a href={backupTinyLink} target='_blank' title='备用链接'>{backupTinyLink}</a>
           </div>
           : ''
       }
