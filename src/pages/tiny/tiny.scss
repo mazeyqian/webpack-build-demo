@@ -10,12 +10,13 @@
   font-family: Arial;
   font-size: 16px;
   box-sizing: border-box;
+  color: #111111;
 
   div, input {
     box-sizing: border-box;
   }
 
-  input, button {
+  input, button, a, span {
     font-size: pxToEm(16);
   }
 
@@ -87,9 +88,30 @@
       align-items: center;
     }
 
+    .placeholder {
+      font-size: pxToEm(14);
+      display: inline-flex;
+      align-items: center;
+    }
+
     a, input, button, span {
       margin-right: pxToEm(10);
       margin-bottom: pxToEm(12);
+    }
+  }
+
+  .generated-result {
+    @extend .result-show;
+
+    margin-top: pxToEm(8);
+    align-items: center;
+    padding-bottom: pxToEm(24);
+
+    span, a {
+      margin: 0;
+      display: flex;
+      justify-items: center;
+      font-size: pxToEm(14);
     }
   }
 }

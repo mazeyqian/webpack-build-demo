@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import React, { Component, useState, useEffect } from 'react';
-import ReactDom from 'react-dom';
+// import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import './normalize.scss';
 import './tiny.scss';
 import { addStyle } from 'mazey';
 
@@ -12,6 +14,7 @@ const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
+  const [backupTinyLink, setBackupTinyLink] = useState('');
 
   useEffect(() => {
     console.log('tiny');
@@ -19,7 +22,17 @@ const Tiny = () => {
     localStorage.setItem('mazey_loaded_tiny', '1');
   }, []);
 
-  const fetchShortLink = () => {
+  const getTinyLink = (oriLink) => {
+    return axios.post('https://feperf.com/api/gee/generate-short-link', {
+      ori_link: oriLink,
+    })
+      .then(res => {
+        console.log('res.data.tiny_link', res.data.tiny_link);
+        return res.data.tiny_link;
+      });
+  };
+
+  const fetchShortLink = async () => {
     let real_ori_link = ori_link;
     if (!ori_link.includes('http')) {
       real_ori_link = `http://${ori_link}`;
@@ -33,6 +46,12 @@ const Tiny = () => {
       setTinyLink(tiny_link);
       setCopied(false);
     });
+    // Backup
+    const backupTinyLink = await getTinyLink(real_ori_link);
+    console.log('backupTinyLink', backupTinyLink);
+    if (backupTinyLink) {
+      setBackupTinyLink(backupTinyLink);
+    }
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
@@ -63,7 +82,18 @@ const Tiny = () => {
         {
           copied ? <span className='copied'>已复制</span> : ''
         }
+        {
+          !tiny_link ? <span className='placeholder'>生成的短链接~</span> : ''
+        }
       </div>
+      {
+        backupTinyLink
+          ? <div className='generated-result'>
+            <span>备用链接：</span>
+            <a href={backupTinyLink} target='_blank'>{backupTinyLink}</a>
+          </div>
+          : ''
+      }
     </div>
   );
 };
@@ -79,7 +109,9 @@ const TinyInit = (selector = '', options = {
   const container = document.querySelector(selector);
 
   if (container) {
-    ReactDom.render(<Tiny />, container);
+    // ReactDom.render(<Tiny />, container);
+    const root = createRoot(container);
+    root.render(<Tiny />);
 
     if (isGrayBackground) {
       addStyle(
@@ -94,7 +126,8 @@ const TinyInit = (selector = '', options = {
   }
 };
 
-TinyInit('#tiny-box');
+// TinyInit('#tiny-box');
+TinyInit('#tiny-box', { isGrayBackground: true });
 
 window.TINY_INIT = TinyInit;
 
