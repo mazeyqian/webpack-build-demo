@@ -16,6 +16,7 @@ const Tiny = () => {
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [backupTinyLink, setBackupTinyLink] = useState('');
+  const [loadedLayer, setLoadedLayer] = useState(false);
 
   useEffect(() => {
     TinyLog.log('tiny');
@@ -30,12 +31,13 @@ const Tiny = () => {
       await loadScript('//i.mazey.net/cdn/layer/layer.js')
         .then(() => {
           // msg('加载完成');
+          setLoadedLayer(true);
         });
     })();
   }, []);
 
   const msg = content => {
-    window.layer && window.layer.msg(content, { time: 2 * 1000 });
+    loadedLayer && window.layer.msg(content, { time: 2 * 1000 });
   };
 
   const getTinyLink = (oriLink) => {
@@ -52,7 +54,7 @@ const Tiny = () => {
     if (typeof hashCode === 'string' && hashCode.length <= 4) {
       const link = `https://mazey.cn/t/${hashCode}`;
       TinyLog.log('link', link);
-      window.layer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
+      loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
         btn: ['确认', '取消'] // 按钮
       }, function () {
@@ -84,6 +86,7 @@ const Tiny = () => {
     }
     setBackupTinyLink('');
     // TinyLog.log('real_ori_link', real_ori_link)
+    loadedLayer && window.layer.load(1);
     axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
@@ -91,6 +94,7 @@ const Tiny = () => {
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
       setCopied(false);
+      loadedLayer && window.layer.closeAll('loading');
       msg('成功');
     });
     // Backup
