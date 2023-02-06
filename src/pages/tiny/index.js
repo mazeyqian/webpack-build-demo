@@ -7,7 +7,7 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole } from 'mazey';
+import { addStyle, genCustomConsole, loadScript } from 'mazey';
 
 const TinyLog = genCustomConsole('TinyLog:', { showDate: true });
 const domain = 'https://mazey.cn';
@@ -21,7 +21,22 @@ const Tiny = () => {
     TinyLog.log('tiny');
     // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
+    // Load
+    // //i.mazey.net/cdn/jquery/2.1.1/jquery.min.js
+    (async () => {
+      if (!(window.$ || window.jQuery)) {
+        await loadScript('//i.mazey.net/cdn/jquery/2.1.1/jquery.min.js');
+      }
+      await loadScript('//i.mazey.net/cdn/layer/layer.js')
+        .then(() => {
+          // msg('加载完成');
+        });
+    })();
   }, []);
+
+  const msg = content => {
+    window.layer && window.layer.msg(content, { time: 2 * 1000 });
+  };
 
   const getTinyLink = (oriLink) => {
     return axios.post('https://feperf.com/api/gee/generate-short-link', {
@@ -37,16 +52,37 @@ const Tiny = () => {
     if (typeof hashCode === 'string' && hashCode.length <= 4) {
       const link = `https://mazey.cn/t/${hashCode}`;
       TinyLog.log('link', link);
-      window.open(link);
+      window.layer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
+        title: '提示',
+        btn: ['确认', '取消'] // 按钮
+      }, function () {
+        window.open(link);
+        // window.layer.msg('的确很重要', { icon: 1 });
+      }, function () {
+        msg('已取消');
+        // window.layer.msg('也可以这样', {
+        //   time: 20000, // 20s后自动关闭
+        //   btn: ['明白了', '知道了']
+        // });
+      });
+      return true;
     }
+    return false;
   };
 
   const fetchShortLink = async () => {
     let real_ori_link = ori_link;
+    if (real_ori_link === '') {
+      msg('不能为空');
+      return;
+    }
     if (!ori_link.includes('http')) {
-      hashCodeToLink(real_ori_link);
+      if (hashCodeToLink(real_ori_link)) {
+        return;
+      }
       real_ori_link = `http://${ori_link}`;
     }
+    setBackupTinyLink('');
     // TinyLog.log('real_ori_link', real_ori_link)
     axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
@@ -55,6 +91,7 @@ const Tiny = () => {
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
       setCopied(false);
+      msg('成功');
     });
     // Backup
     const backupTinyLink = await getTinyLink(real_ori_link);
