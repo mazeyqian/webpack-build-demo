@@ -96,6 +96,10 @@ const Tiny = () => {
       setCopied(false);
       loadedLayer && window.layer.closeAll('loading');
       msg('成功');
+    }).catch(err => {
+      loadedLayer && window.layer.closeAll('loading');
+      msg('网络错误');
+      TinyLog.error(err.message);
     });
     // Backup
     const backupTinyLink = await getTinyLink(real_ori_link);
@@ -110,10 +114,21 @@ const Tiny = () => {
     setOriLink(ori_link);
   };
 
+  const handleKeyDown = ({ key }) => {
+    // https://www.w3.org/TR/uievents-key/#keys-whitespace
+    if (key === 'Enter') {
+      fetchShortLink();
+    }
+  };
+
   return (
     <div className='tiny-box'>
       <div className='generate'>
-        <input value={ori_link} onChange={inputChange} placeholder='请输入长链接' autoFocus />
+        <input value={ori_link}
+          onChange={inputChange}
+          onKeyDown={handleKeyDown}
+          placeholder='请输入长链接' autoFocus
+        />
         <button type='button' onClick={fetchShortLink}>生成</button>
       </div>
       <div className='result-show'>

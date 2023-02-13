@@ -115,5 +115,10 @@ $TinyBoxSize: 16px;
       justify-items: center;
       font-size: pxToEm(14);
     }
+
+    a {
+      text-decoration: underline;
+      color: #111111;
+    }
   }
 }
