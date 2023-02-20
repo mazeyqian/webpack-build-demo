@@ -7,10 +7,14 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, loadScript } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, updateQueryParam } from 'mazey';
 
 const TinyLog = genCustomConsole('TinyLog:', { showDate: true });
+// Example: https://blog.mazey.net/
+// const prefixBaseUrl = `${location.protocol}//${location.host}/`;
 const domain = 'https://mazey.cn';
+const backupDomain = 'https://feperf.com';
+const libBaseUrl = '//i.mazey.net/lib';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
@@ -26,22 +30,36 @@ const Tiny = () => {
     // //i.mazey.net/cdn/jquery/2.1.1/jquery.min.js
     (async () => {
       if (!(window.$ || window.jQuery)) {
-        await loadScript('//i.mazey.net/cdn/jquery/2.1.1/jquery.min.js');
+        await loadScript(`${libBaseUrl}/jquery/2.1.1/jquery.min.js`);
       }
-      await loadScript('//i.mazey.net/cdn/layer/layer.js')
+      await loadScript(`${libBaseUrl}/layer/layer.js`)
         .then(() => {
-          // msg('加载完成');
           setLoadedLayer(true);
+          // msg('加载完成');
         });
+      const queryMsg = getQueryParam('msg');
+      if (queryMsg) {
+        setOriLink(queryMsg);
+        msg('消息接收成功');
+      }
     })();
   }, []);
 
-  const msg = content => {
-    loadedLayer && window.layer.msg(content, { time: 2 * 1000 });
+  const msg = (content, tryAgain = true) => {
+    if (loadedLayer) {
+      window.layer.msg(content, { time: 2 * 1000 });
+    } else if (window.layer && typeof window.layer === 'object') {
+      window.layer.msg(content, { time: 2 * 1000 });
+    } else if (tryAgain === true) {
+      TinyLog('tryAgain', tryAgain);
+      setTimeout(() => {
+        msg(content, false);
+      }, 1000);
+    }
   };
 
   const getTinyLink = (oriLink) => {
-    return axios.post('https://feperf.com/api/gee/generate-short-link', {
+    return axios.post(`${backupDomain}/api/gee/generate-short-link`, {
       ori_link: oriLink,
     })
       .then(res => {
@@ -52,38 +70,75 @@ const Tiny = () => {
 
   const hashCodeToLink = hashCode => {
     if (typeof hashCode === 'string' && hashCode.length <= 4) {
-      const link = `https://mazey.cn/t/${hashCode}`;
+      const link = `${domain}/t/${hashCode.toLowerCase()}`;
       TinyLog.log('link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
         btn: ['确认', '取消'] // 按钮
       }, function () {
         window.open(link);
-        // window.layer.msg('的确很重要', { icon: 1 });
       }, function () {
         msg('已取消');
-        // window.layer.msg('也可以这样', {
-        //   time: 20000, // 20s后自动关闭
-        //   btn: ['明白了', '知道了']
-        // });
       });
       return true;
     }
     return false;
   };
 
+  const convertToMsg = link => {
+    let ok, fail, retLink;
+    const status = new Promise((resolve, reject) => {
+      ok = resolve;
+      fail = reject;
+    });
+    if (!isValidUrl(link)) {
+      TinyLog.log('link', link);
+      TinyLog.log('ori_link', ori_link);
+      loadedLayer && window.layer.confirm(`检测到输入文字，将通过短链传递：${ori_link}`, {
+        title: '提示',
+        btn: ['确认', '取消'] // 按钮
+      }, function () {
+        retLink = updateQueryParam(location.href, 'msg', ori_link);
+        TinyLog.log('retLink', retLink);
+        ok(retLink);
+      }, function () {
+        msg('已取消');
+        ok('cancel');
+      });
+    } else {
+      ok('valid');
+    }
+    return status;
+  };
+
   const fetchShortLink = async () => {
-    let real_ori_link = ori_link;
-    if (real_ori_link === '') {
+    let real_ori_link = '';
+    if (ori_link === '') {
       msg('不能为空');
       return;
     }
     if (!ori_link.includes('http')) {
-      if (hashCodeToLink(real_ori_link)) {
+      // Quickly Visit
+      if (hashCodeToLink(ori_link)) {
         return;
       }
       real_ori_link = `http://${ori_link}`;
+    } else {
+      real_ori_link = ori_link;
     }
+    const msgLink = await convertToMsg(real_ori_link);
+    TinyLog.log('msgLink', msgLink);
+    if (msgLink === 'cancel') {
+      return;
+    }
+    if (typeof msgLink === 'string' && isValidUrl(msgLink)) {
+      real_ori_link = msgLink;
+    }
+    // Debug - begin
+    if (typeof msgLink === 'string' && msgLink.includes('localhost:9202')) {
+      real_ori_link = msgLink;
+    }
+    // Debug - end
     setBackupTinyLink('');
     // TinyLog.log('real_ori_link', real_ori_link)
     loadedLayer && window.layer.load(1);
@@ -119,6 +174,12 @@ const Tiny = () => {
     if (key === 'Enter') {
       fetchShortLink();
     }
+  };
+
+  const isValidUrl = url => {
+    // eslint-disable-next-line max-len
+    const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
+    return regIns.test(url);
   };
 
   return (
