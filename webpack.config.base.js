@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackObfuscator = require('webpack-obfuscator');
 const { genCustomConsole } = require('mazey');
@@ -24,9 +24,9 @@ const plugins = [
     inject: true,
     chunksSortMode: 'auto'
   }),
-  new CleanWebpackPlugin({
-    cleanOnceBeforeBuildPatterns: ['lib'],
-  }),
+  // new CleanWebpackPlugin({
+  //   cleanAfterEveryBuildPatterns: ['./*.css'],
+  // }),
 ];
 
 if (ENTRY === 'obfuscator') {
