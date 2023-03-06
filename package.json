@@ -10,6 +10,8 @@
     "build:tiny": "cross-env ENTRY=tiny webpack --config webpack.config.prd.js",
     "build:cdn": "cross-env ENTRY=cdn webpack --config webpack.config.prd.js",
     "build:obfuscator": "cross-env ENTRY=obfuscator webpack --config webpack.config.prd.js",
+    "watch:confluence": "cross-env ENTRY=confluence webpack watch --mode=development --config webpack.config.lib.js",
+    "build:confluence": "cross-env ENTRY=confluence webpack --mode=production --config webpack.config.lib.js",
     "lint-and-fix": "eslint ./src/**/*.js --ext 'js' --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
