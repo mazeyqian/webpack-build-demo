@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
-import { formatDate, getCookie } from 'mazey';
+import { formatDate, getCookie, isNonEmptyArray, genCustomConsole } from 'mazey';
 
-console.log('confluence');
+const ConCon = genCustomConsole('Confluence:');
+
+ConCon.log('loaded');
 
 // Area: `.wiki-content`
 if (window.$) {
@@ -11,6 +13,13 @@ if (window.$) {
   $('.wiki-content td.confluenceTd>a').after('<br />');
   // Record
   const userName = getCookie('username') || 'unknown';
+  let pageTitle = document.title;
+  if (typeof pageTitle === 'string' && pageTitle.length) {
+    const titleArr = pageTitle.split('-');
+    if (isNonEmptyArray(titleArr)) {
+      pageTitle = titleArr[0];
+    }
+  }
   const settings = {
     url: 'https://i.mazey.net/server/log/add',
     method: 'POST',
@@ -20,10 +29,10 @@ if (window.$) {
     },
     data: JSON.stringify({
       log_type: 'confluence',
-      content: `「${userName}」visited「[${document.title}](${location.href})」at「${formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')}」`,
+      content: `「${userName}」visited「[${pageTitle}](${location.href})」at「${formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')}」`,
     }),
   };
   $.ajax(settings).done(function (response) {
-    // console.log(response);
+    // ConCon.log(response);
   });
 }
