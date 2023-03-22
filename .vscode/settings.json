@@ -1,4 +1,4 @@
 {
-  "window.title": "Script${separator}${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}",
+  "window.title": "JavaScript${separator}${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}",
   "liveServer.settings.port": 5513
 }
