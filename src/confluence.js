@@ -12,7 +12,17 @@ if (window.$) {
   // Table
   $('.wiki-content td.confluenceTd>a').after('<br />');
   // Record
-  const userName = getCookie('username') || 'unknown';
+  let userName, zhUserName;
+  const enUserName = getCookie('username') || 'unknown';
+  const zhUserNameDom = $('#user-menu-link');
+  if (zhUserNameDom.length) {
+    zhUserName = zhUserNameDom.attr('title');
+  }
+  if (zhUserName) {
+    userName = `${zhUserName}/${enUserName}`;
+  } else {
+    userName = enUserName;
+  }
   let pageTitle = document.title;
   if (typeof pageTitle === 'string' && pageTitle.length) {
     const titleArr = pageTitle.split('-');
