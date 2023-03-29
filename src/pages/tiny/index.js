@@ -9,7 +9,16 @@ import './normalize.scss';
 import './tiny.scss';
 import { addStyle, genCustomConsole, getQueryParam, loadScript, updateQueryParam } from 'mazey';
 
-const TinyLog = genCustomConsole('TinyLog:', { showDate: true });
+// Test Examples:
+// http://localhost:9202/tiny.html
+// https://blog.mazey.net/tiny
+// blog.mazey.net/tiny
+// ftp://main/sub?id=2333
+// sheeee://hahah/sub?id=num
+// 短消息
+// AAa
+// b
+const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
 // Example: https://blog.mazey.net/
 // const prefixBaseUrl = `${location.protocol}//${location.host}/`;
 const domain = 'https://mazey.cn';
@@ -23,7 +32,7 @@ const Tiny = () => {
   const [loadedLayer, setLoadedLayer] = useState(false);
 
   useEffect(() => {
-    TinyLog.log('tiny');
+    TinyCon.log('tiny');
     // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
     // Load
@@ -51,7 +60,7 @@ const Tiny = () => {
     } else if (window.layer && typeof window.layer === 'object') {
       window.layer.msg(content, { time: 2 * 1000 });
     } else if (tryAgain === true) {
-      TinyLog('tryAgain', tryAgain);
+      TinyCon.log('tryAgain', tryAgain);
       setTimeout(() => {
         msg(content, false);
       }, 1000);
@@ -63,7 +72,7 @@ const Tiny = () => {
       ori_link: oriLink,
     })
       .then(res => {
-        TinyLog.log('Tiny Link', res.data.tiny_link);
+        TinyCon.log('Tiny Link', res.data.tiny_link);
         return res.data.tiny_link;
       });
   };
@@ -71,7 +80,7 @@ const Tiny = () => {
   const hashCodeToLink = hashCode => {
     if (typeof hashCode === 'string' && hashCode.length <= 4 && isValidENCode(hashCode)) {
       const link = `${domain}/t/${hashCode.toLowerCase()}`;
-      TinyLog.log('link', link);
+      TinyCon.log('link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
         btn: ['确认', '取消'] // 按钮
@@ -91,15 +100,15 @@ const Tiny = () => {
       ok = resolve;
       fail = reject;
     });
-    if (!isValidUrl(link)) {
-      TinyLog.log('link', link);
-      TinyLog.log('ori_link', ori_link);
+    if (!(isValidUrl(link) || isValidSchemeUrl(link))) {
+      TinyCon.log('link', link);
+      TinyCon.log('ori_link', ori_link);
       loadedLayer && window.layer.confirm(`检测到输入文字，将通过短链传递：${ori_link}`, {
         title: '提示',
         btn: ['确认', '取消'] // 按钮
       }, function () {
         retLink = updateQueryParam(location.href, 'msg', ori_link);
-        TinyLog.log('retLink', retLink);
+        TinyCon.log('retLink', retLink);
         ok(retLink);
       }, function () {
         msg('已取消');
@@ -117,7 +126,7 @@ const Tiny = () => {
       msg('不能为空');
       return;
     }
-    if (!ori_link.includes('http')) {
+    if (!(ori_link.includes('http') || isValidSchemeUrl(ori_link))) {
       // Quickly Visit
       if (hashCodeToLink(ori_link)) {
         return;
@@ -127,11 +136,11 @@ const Tiny = () => {
       real_ori_link = ori_link;
     }
     const msgLink = await convertToMsg(real_ori_link);
-    TinyLog.log('msgLink', msgLink);
+    TinyCon.log('msgLink', msgLink);
     if (msgLink === 'cancel') {
       return;
     }
-    if (typeof msgLink === 'string' && isValidUrl(msgLink)) {
+    if (typeof msgLink === 'string' && (isValidUrl(msgLink) || isValidSchemeUrl(msgLink))) {
       real_ori_link = msgLink;
     }
     // Debug - begin
@@ -140,12 +149,13 @@ const Tiny = () => {
     }
     // Debug - end
     setBackupTinyLink('');
-    // TinyLog.log('real_ori_link', real_ori_link)
+    // TinyCon.log('real_ori_link', real_ori_link)
     loadedLayer && window.layer.load(1);
+    TinyCon.log('Ultimate', real_ori_link);
     axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
-      // TinyLog.log('fetchShortLink', res)
+      // TinyCon.log('fetchShortLink', res)
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
       setCopied(false);
@@ -154,18 +164,18 @@ const Tiny = () => {
     }).catch(err => {
       loadedLayer && window.layer.closeAll('loading');
       msg('网络错误');
-      TinyLog.error(err.message);
+      TinyCon.error(err.message);
     });
     // Backup
     const backupTinyLink = await getTinyLink(real_ori_link);
-    TinyLog.log('Backup Tiny Link', backupTinyLink);
+    TinyCon.log('Backup Tiny Link', backupTinyLink);
     if (backupTinyLink) {
       setBackupTinyLink(backupTinyLink);
     }
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
-    // TinyLog.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
+    // TinyCon.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
     setOriLink(ori_link);
   };
 
@@ -182,13 +192,19 @@ const Tiny = () => {
     return regIns.test(url);
   };
 
+  const isValidSchemeUrl = url => {
+    // eslint-disable-next-line max-len
+    const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
+    return regIns.test(url);
+  };
+
   // Detect including Chinese?
   // const hasChinese = str => {
   //   return /[\u4E00-\u9FA5]+/g.test(str);
   // };
 
   const isValidENCode = str => {
-    return /^[a-z]+$/g.test(str);
+    return /^[a-zA-Z]+$/g.test(str);
   };
 
   return (
