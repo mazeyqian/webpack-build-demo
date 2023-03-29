@@ -69,7 +69,7 @@ const Tiny = () => {
   };
 
   const hashCodeToLink = hashCode => {
-    if (typeof hashCode === 'string' && hashCode.length <= 4) {
+    if (typeof hashCode === 'string' && hashCode.length <= 4 && isValidENCode(hashCode)) {
       const link = `${domain}/t/${hashCode.toLowerCase()}`;
       TinyLog.log('link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
@@ -180,6 +180,15 @@ const Tiny = () => {
     // eslint-disable-next-line max-len
     const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
     return regIns.test(url);
+  };
+
+  // Detect including Chinese?
+  // const hasChinese = str => {
+  //   return /[\u4E00-\u9FA5]+/g.test(str);
+  // };
+
+  const isValidENCode = str => {
+    return /^[a-z]+$/g.test(str);
   };
 
   return (
