@@ -100,7 +100,7 @@ const Tiny = () => {
       ok = resolve;
       fail = reject;
     });
-    if (!(isValidUrl(link) || isValidSchemeUrl(link))) {
+    if (!(isValidHttpWwwUrl(link) || isValidAnyUrl(link))) {
       TinyCon.log('link', link);
       TinyCon.log('ori_link', ori_link);
       loadedLayer && window.layer.confirm(`检测到输入文字，将通过短链传递：${ori_link}`, {
@@ -126,7 +126,7 @@ const Tiny = () => {
       msg('不能为空');
       return;
     }
-    if (!(ori_link.includes('http') || isValidSchemeUrl(ori_link))) {
+    if (!(ori_link.includes('http') || isValidAnyUrl(ori_link))) {
       // Quickly Visit
       if (hashCodeToLink(ori_link)) {
         return;
@@ -140,7 +140,7 @@ const Tiny = () => {
     if (msgLink === 'cancel') {
       return;
     }
-    if (typeof msgLink === 'string' && (isValidUrl(msgLink) || isValidSchemeUrl(msgLink))) {
+    if (typeof msgLink === 'string' && (isValidHttpWwwUrl(msgLink) || isValidAnyUrl(msgLink))) {
       real_ori_link = msgLink;
     }
     // Debug - begin
@@ -186,15 +186,15 @@ const Tiny = () => {
     }
   };
 
-  const isValidUrl = url => {
+  const isValidHttpWwwUrl = url => {
     // eslint-disable-next-line max-len
     const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
     return regIns.test(url);
   };
 
-  const isValidSchemeUrl = url => {
+  const isValidAnyUrl = url => {
     // eslint-disable-next-line max-len
-    const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
+    const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9\u4E00-\u9FA5()!@:%_+.~#?&//=]*)/gm;
     return regIns.test(url);
   };
 
