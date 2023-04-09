@@ -7,11 +7,12 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, updateQueryParam } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
 // https://blog.mazey.net/tiny
+//  https://blog.mazey.net/tiny
 // blog.mazey.net/tiny
 // ftp://main/sub?id=2333
 // sheeee://hahah/sub?id=num
@@ -131,7 +132,7 @@ const Tiny = () => {
       if (hashCodeToLink(ori_link)) {
         return;
       }
-      real_ori_link = `http://${ori_link}`;
+      real_ori_link = `http://${mTrim(ori_link)}`;
     } else {
       real_ori_link = ori_link;
     }
@@ -149,6 +150,11 @@ const Tiny = () => {
     }
     // Debug - end
     setBackupTinyLink('');
+    if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
+      TinyCon.log('ori_link before trim:', real_ori_link);
+      // setOriLink(mTrim(ori_link));
+      real_ori_link = mTrim(real_ori_link);
+    }
     // TinyCon.log('real_ori_link', real_ori_link)
     loadedLayer && window.layer.load(1);
     TinyCon.log('Ultimate', real_ori_link);
