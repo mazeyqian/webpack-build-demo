@@ -7,7 +7,7 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -25,12 +25,15 @@ const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
 const domain = 'https://mazey.cn';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
+const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [backupTinyLink, setBackupTinyLink] = useState('');
   const [loadedLayer, setLoadedLayer] = useState(false);
+  // Case: { title: 'Tiny', link: 'https://blog.mazey.net/tiny', area: 'global' }
+  const [backupTinyLinks, setBackupTinyLinks] = useState([]);
 
   useEffect(() => {
     TinyCon.log('tiny');
@@ -53,6 +56,21 @@ const Tiny = () => {
         msg('消息接收成功');
       }
     })();
+    // Load Backup Tiny Links
+    const tempBackupTinyLinks = backupTinyLinks;
+    tempBackupTinyLinks.push(
+      {
+        title: defaultTinyTitle,
+        link: 'https://blog.mazey.net/tiny?msg=test1',
+        area: '全球',
+      },
+      {
+        title: defaultTinyTitle,
+        link: 'https://blog.mazey.net/tiny?msg=test2',
+        area: '中国境内',
+      },
+    );
+    setBackupTinyLinks(tempBackupTinyLinks);
   }, []);
 
   const msg = (content, tryAgain = true) => {
@@ -251,6 +269,17 @@ const Tiny = () => {
             <a href={backupTinyLink} target='_blank' title='备用链接'>{backupTinyLink}</a>
           </div>
           : ''
+      }
+      {
+        backupTinyLinks.map((tiny, index) => (
+          <div className='generated-result' key={`${index}-${genHashCode(tiny.link)}`}>
+            <span>{tiny.title} {index + 1}（{tiny.area}）：</span>
+            <a href={tiny.link} target='_blank' title='备用链接'>{tiny.link}</a>
+            <CopyToClipboard onCopy={() => setCopied(true)} text={tiny.link}>
+              <button>复制</button>
+            </CopyToClipboard>
+          </div>
+        ))
       }
     </div>
   );
