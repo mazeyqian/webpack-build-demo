@@ -63,11 +63,13 @@ const Tiny = () => {
         title: defaultTinyTitle,
         link: 'https://blog.mazey.net/tiny?msg=test1',
         area: '全球',
+        copied: false,
       },
       {
         title: defaultTinyTitle,
         link: 'https://blog.mazey.net/tiny?msg=test2',
         area: '中国境内',
+        copied: false,
       },
     );
     setBackupTinyLinks(tempBackupTinyLinks);
@@ -231,6 +233,19 @@ const Tiny = () => {
     return /^[a-zA-Z]+$/g.test(str);
   };
 
+  const copyOneOfBackupTinys = (index) => {
+    let backupTinyLink = backupTinyLinks[index];
+    if (backupTinyLink) {
+      backupTinyLink = Object.assign(backupTinyLink, { copied: true });
+      setBackupTinyLinks(prevBackupTinyLinks => {
+        const newBackupTinyLinks = [...prevBackupTinyLinks];
+        newBackupTinyLinks[index] = backupTinyLink;
+        return newBackupTinyLinks;
+      });
+      msg('成功');
+    }
+  };
+
   return (
     <div className='tiny-box'>
       <div className='generate'>
@@ -272,12 +287,15 @@ const Tiny = () => {
       }
       {
         backupTinyLinks.map((tiny, index) => (
-          <div className='generated-result' key={`${index}-${genHashCode(tiny.link)}`}>
+          <div className='generated-result is-backup' key={`${index}-${genHashCode(tiny.link)}`}>
             <span>{tiny.title} {index + 1}（{tiny.area}）：</span>
             <a href={tiny.link} target='_blank' title='备用链接'>{tiny.link}</a>
-            <CopyToClipboard onCopy={() => setCopied(true)} text={tiny.link}>
+            <CopyToClipboard onCopy={() => copyOneOfBackupTinys(index)} text={tiny.link}>
               <button>复制</button>
             </CopyToClipboard>
+            {
+              tiny.copied ? <span className='copied'>已复制</span> : ''
+            }
           </div>
         ))
       }
