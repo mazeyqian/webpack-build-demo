@@ -48,9 +48,9 @@ if (window.$) {
   });
   setImgWidthHeight();
   // ICON: https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png
-  // HTML <a>: <a href="https://example.com">【PC端】游戏中心客服系统升级 #date-2023-04-13</a>
+  // HTML <a>: <a href="https://example.com">Example Text #date-2023-04-13</a>
   // Use jQuery to add the icon in the content of the <a>
-  // Example: <a href="https://example.com">【PC端】游戏中心客服系统升级 <img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png">2023-04-13</a>
+  // Example: <a href="https://example.com">Example Text <img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png">2023-04-13</a>
   // And then, add CSS/Style to the <img> to make it looks better.
   // Let the ICON looks like a part of the <a> text. The size is similar to the text.
   // And the page has many <a> like this, so we need to use jQuery to do this.
