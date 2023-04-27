@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { formatDate, getCookie, isNonEmptyArray, genCustomConsole } from 'mazey';
+import { setImgWidthHeight } from 'mazey-wordpress-utils';
 
 const ConCon = genCustomConsole('Confluence:');
 
@@ -45,4 +46,5 @@ if (window.$) {
   $.ajax(settings).done(function (response) {
     // ConCon.log(response);
   });
+  setImgWidthHeight();
 }
