@@ -7,7 +7,7 @@ import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -23,6 +23,7 @@ const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
 // Example: https://blog.mazey.net/
 // const prefixBaseUrl = `${location.protocol}//${location.host}/`;
 const domain = 'https://mazey.cn';
+const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
 const defaultTinyTitle = '备用链接';
@@ -57,22 +58,22 @@ const Tiny = () => {
       }
     })();
     // Load Backup Tiny Links
-    const tempBackupTinyLinks = backupTinyLinks;
-    tempBackupTinyLinks.push(
-      {
-        title: defaultTinyTitle,
-        link: 'https://blog.mazey.net/tiny?msg=test1',
-        area: '全球',
-        copied: false,
-      },
-      {
-        title: defaultTinyTitle,
-        link: 'https://blog.mazey.net/tiny?msg=test2',
-        area: '中国境内',
-        copied: false,
-      },
-    );
-    setBackupTinyLinks(tempBackupTinyLinks);
+    // const tempBackupTinyLinks = backupTinyLinks;
+    // tempBackupTinyLinks.push(
+    //   {
+    //     title: defaultTinyTitle,
+    //     link: 'https://blog.mazey.net/tiny?msg=test1',
+    //     area: '全球',
+    //     copied: false,
+    //   },
+    //   {
+    //     title: defaultTinyTitle,
+    //     link: 'https://blog.mazey.net/tiny?msg=test2',
+    //     area: '境内',
+    //     copied: false,
+    //   },
+    // );
+    // setBackupTinyLinks(tempBackupTinyLinks);
   }, []);
 
   const msg = (content, tryAgain = true) => {
@@ -96,6 +97,16 @@ const Tiny = () => {
         TinyCon.log('Tiny Link', res.data.tiny_link);
         return res.data.tiny_link;
       });
+  };
+
+  const getNewTinyLink = (oriLink) => {
+    return axios.post(`${newDomain}/server/generate/short-link`, {
+      ori_link: oriLink,
+    }).then(res => {
+      const { data: { data: { tiny_link } } } = res;
+      TinyCon.log('getNewTinyLink', tiny_link);
+      return tiny_link;
+    });
   };
 
   const hashCodeToLink = hashCode => {
@@ -170,6 +181,7 @@ const Tiny = () => {
     }
     // Debug - end
     setBackupTinyLink('');
+    setBackupTinyLinks([]);
     if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
       TinyCon.log('ori_link before trim:', real_ori_link);
       // setOriLink(mTrim(ori_link));
@@ -193,11 +205,41 @@ const Tiny = () => {
       TinyCon.error(err.message);
     });
     // Backup
-    const backupTinyLink = await getTinyLink(real_ori_link);
-    TinyCon.log('Backup Tiny Link', backupTinyLink);
-    if (backupTinyLink) {
-      setBackupTinyLink(backupTinyLink);
-    }
+    const bakLinks = [];
+    // const backupTinyLink = await getTinyLink(real_ori_link);
+    // TinyCon.log('Backup Tiny Link', backupTinyLink);
+    // if (backupTinyLink) {
+    //   bakLinks.push({
+    //     title: defaultTinyTitle,
+    //     link: backupTinyLink,
+    //     area: '全球',
+    //     copied: false,
+    //   });
+    //   setBackupTinyLinks(bakLinks);
+    // }
+    getTinyLink(real_ori_link).then(backupTinyLink => {
+      if (isValidAnyUrl(backupTinyLink)) {
+        bakLinks.push({
+          title: defaultTinyTitle,
+          link: backupTinyLink,
+          area: '全球',
+          copied: false,
+        });
+        setBackupTinyLinks(deepCopyObject(bakLinks));
+      }
+    });
+    getNewTinyLink(real_ori_link).then(backupTinyLink => {
+      if (isValidAnyUrl(backupTinyLink)) {
+        bakLinks.push({
+          title: defaultTinyTitle,
+          // link: backupTinyLink.replace('mazey.cn', 'i.mazey.net'),
+          link: backupTinyLink,
+          area: '境内',
+          copied: false,
+        });
+        setBackupTinyLinks(deepCopyObject(bakLinks));
+      }
+    });
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
@@ -242,7 +284,7 @@ const Tiny = () => {
         newBackupTinyLinks[index] = backupTinyLink;
         return newBackupTinyLinks;
       });
-      msg('成功');
+      // msg('成功');
     }
   };
 
@@ -277,18 +319,18 @@ const Tiny = () => {
           !tiny_link ? <span className='placeholder'>生成的短链接~</span> : ''
         }
       </div>
-      {
+      {/* {
         backupTinyLink
           ? <div className='generated-result'>
             <span>备用链接：</span>
             <a href={backupTinyLink} target='_blank' title='备用链接'>{backupTinyLink}</a>
           </div>
           : ''
-      }
+      } */}
       {
         backupTinyLinks.map((tiny, index) => (
           <div className='generated-result is-backup' key={`${index}-${genHashCode(tiny.link)}`}>
-            <span>{tiny.title} {index + 1}（{tiny.area}）：</span>
+            <span>{tiny.title} {index + 1}「{tiny.area}」：</span>
             <a href={tiny.link} target='_blank' title='备用链接'>{tiny.link}</a>
             <CopyToClipboard onCopy={() => copyOneOfBackupTinys(index)} text={tiny.link}>
               <button>复制</button>
