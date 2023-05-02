@@ -205,27 +205,28 @@ const Tiny = () => {
     // TinyCon.log('real_ori_link', real_ori_link)
     loadedLayer && window.layer.load(1);
     TinyCon.log('Ultimate', real_ori_link);
-    axios.post(`${domain}/server/generate/short-link`, {
+    const tinyLink = await axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
       // TinyCon.log('fetchShortLink', res)
+      loadedLayer && window.layer.closeAll('loading');
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
       setCopied(false);
-      loadedLayer && window.layer.closeAll('loading');
-      // QRCode
-      if (typeof tiny_link === 'string' && tiny_link.includes('http')) {
-        setShowQRCode(true);
-        setTimeout(() => {
-          convertUrlStringToQRCode(tiny_link);
-        }, 500);
-        msg('成功');
-      }
+      msg('成功');
+      return tiny_link;
     }).catch(err => {
       loadedLayer && window.layer.closeAll('loading');
       msg('网络错误');
       TinyCon.error(err.message);
     });
+    // QRCode
+    if (typeof tinyLink === 'string' && tinyLink.includes('http')) {
+      setShowQRCode(true);
+      setTimeout(() => {
+        convertUrlStringToQRCode(tinyLink);
+      }, 500);
+    }
     // Backup
     const bakLinks = [];
     // const backupTinyLink = await getTinyLink(real_ori_link);
