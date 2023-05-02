@@ -19,6 +19,8 @@ import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQue
 // 短消息
 // AAa
 // b
+// <a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
+// http://blog.mazey.net/tiny/index.html?msg=<a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
 const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
 // Example: https://blog.mazey.net/
 // const prefixBaseUrl = `${location.protocol}//${location.host}/`;
@@ -54,6 +56,7 @@ const Tiny = () => {
       const queryMsg = getQueryParam('msg');
       if (queryMsg) {
         setOriLink(queryMsg);
+        setTinyLink(queryMsg);
         msg('消息接收成功');
       }
     })();
@@ -135,11 +138,17 @@ const Tiny = () => {
     if (!(isValidHttpWwwUrl(link) || isValidAnyUrl(link))) {
       TinyCon.log('link', link);
       TinyCon.log('ori_link', ori_link);
-      loadedLayer && window.layer.confirm(`检测到输入文字，将通过短链传递：${ori_link}`, {
+      let linkForMsg = ori_link;
+      let isTag = false;
+      if (isHtmlTag(linkForMsg)) {
+        linkForMsg = linkForMsg.replace(/<[^>]+>/g, '');
+        isTag = true;
+      }
+      loadedLayer && window.layer.confirm(`检测到输入${isTag ? '标签' : '文字'}，将通过短链传递：${linkForMsg}`, {
         title: '提示',
         btn: ['确认', '取消'] // 按钮
       }, function () {
-        retLink = updateQueryParam(location.href, 'msg', ori_link);
+        retLink = updateQueryParam(location.href, 'msg', linkForMsg);
         TinyCon.log('retLink', retLink);
         ok(retLink);
       }, function () {
@@ -254,13 +263,36 @@ const Tiny = () => {
     }
   };
 
+  // Check a given value if it is html tag
+  // Example:
+  // <a href="https://mazey.cn/t/bbg" target="_blank">xxx</a>
+  // true
+  // <img src="https://mazey.cn/t/bbg" />
+  // true
+  // http://example.com/tiny/index.html?&</>
+  // false
+  const isHtmlTag = str => {
+    // It's wrong.
+    // isHtmlTag('http://example.com/tiny/index.html?&</>')
+    // true
+    // it should be false
+    return /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/g.test(str);
+    // return /<[^>]+>/g.test(str);
+  };
+
   const isValidHttpWwwUrl = url => {
+    if (isHtmlTag(url)) {
+      return false;
+    }
     // eslint-disable-next-line max-len
     const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
     return regIns.test(url);
   };
 
   const isValidAnyUrl = url => {
+    if (isHtmlTag(url)) {
+      return false;
+    }
     // eslint-disable-next-line max-len
     const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9\u4E00-\u9FA5()!@:%_+.~#?&//=]*)/gm;
     return regIns.test(url);
