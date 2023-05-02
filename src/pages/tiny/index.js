@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 // import ReactDom from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import QRCodeStyling from 'qr-code-styling';
 import './normalize.scss';
 import './tiny.scss';
 import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject } from 'mazey';
@@ -28,15 +29,18 @@ const domain = 'https://mazey.cn';
 const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
+const QRCodeFav = 'https://i.mazey.net/icon/fav/logo-dark-circle-152x152.png';
 const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
   const [backupTinyLink, setBackupTinyLink] = useState('');
   const [loadedLayer, setLoadedLayer] = useState(false);
   // Case: { title: 'Tiny', link: 'https://blog.mazey.net/tiny', area: 'global' }
   const [backupTinyLinks, setBackupTinyLinks] = useState([]);
+  const ref = useRef(null);
 
   useEffect(() => {
     TinyCon.log('tiny');
@@ -77,6 +81,7 @@ const Tiny = () => {
     //   },
     // );
     // setBackupTinyLinks(tempBackupTinyLinks);
+    // convertUrlStringToQRCode('https://blog.mazey.net/tiny');
   }, []);
 
   const msg = (content, tryAgain = true) => {
@@ -191,6 +196,7 @@ const Tiny = () => {
     // Debug - end
     setBackupTinyLink('');
     setBackupTinyLinks([]);
+    setShowQRCode(false);
     if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
       TinyCon.log('ori_link before trim:', real_ori_link);
       // setOriLink(mTrim(ori_link));
@@ -207,7 +213,14 @@ const Tiny = () => {
       setTinyLink(tiny_link);
       setCopied(false);
       loadedLayer && window.layer.closeAll('loading');
-      msg('成功');
+      // QRCode
+      if (typeof tiny_link === 'string' && tiny_link.includes('http')) {
+        setShowQRCode(true);
+        setTimeout(() => {
+          convertUrlStringToQRCode(tiny_link);
+        }, 500);
+        msg('成功');
+      }
     }).catch(err => {
       loadedLayer && window.layer.closeAll('loading');
       msg('网络错误');
@@ -320,6 +333,30 @@ const Tiny = () => {
     }
   };
 
+  const convertUrlStringToQRCode = url => {
+    TinyCon.log('convertUrlStringToQRCode', url);
+    const qrCode = new QRCodeStyling({
+      width: 200,
+      height: 200,
+      // margin: 0, // 12,
+      data: url,
+      image: QRCodeFav,
+      dotsOptions: {
+        color: '#111111',
+        type: 'square',
+      },
+      backgroundOptions: {
+        color: '#ffffff',
+      },
+      imageOptions: {
+        crossOrigin: 'anonymous',
+        margin: 0,
+      },
+    });
+    qrCode.append(ref.current);
+    // qrCode.append(document.getElementById('qr-code'));
+  };
+
   return (
     <div className='tiny-box'>
       <div className='generate'>
@@ -372,6 +409,13 @@ const Tiny = () => {
             }
           </div>
         ))
+      }
+      {
+        showQRCode
+          ? <div className='generated-result is-qr'>
+            <div className='qr-code' id='qr-code' ref={ref}></div>
+          </div>
+          : ''
       }
     </div>
   );
