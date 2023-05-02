@@ -29,7 +29,7 @@ const domain = 'https://mazey.cn';
 const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
-const QRCodeFav = 'https://i.mazey.net/icon/fav/logo-dark-circle-152x152.png';
+const QRCodeFav = 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
 const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
