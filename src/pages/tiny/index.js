@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCodeStyling from 'qr-code-styling';
+import { QRCodeFavBase64 } from './images.js';
 import './normalize.scss';
 import './tiny.scss';
 import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject } from 'mazey';
@@ -29,7 +30,7 @@ const domain = 'https://mazey.cn';
 const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
-const QRCodeFav = 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
+const QRCodeFav = QRCodeFavBase64; // 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
 const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
@@ -111,7 +112,10 @@ const Tiny = () => {
     return axios.post(`${newDomain}/server/generate/short-link`, {
       ori_link: oriLink,
     }).then(res => {
-      const { data: { data: { tiny_link } } } = res;
+      let { data: { data: { tiny_link } } } = res;
+      if (typeof tiny_link === 'string' && tiny_link.length > 0 && tiny_link.includes('mazey.cn')) {
+        tiny_link = tiny_link.replace('mazey.cn', 'i.mazey.net');
+      }
       TinyCon.log('getNewTinyLink', tiny_link);
       return tiny_link;
     });
