@@ -6,7 +6,7 @@
   "scripts": {
     "build:index": "cross-env ENTRY=index webpack --config webpack.config.prd.js",
     "build:wordpress": "cross-env ENTRY=wordpress webpack --config webpack.config.prd.js",
-    "serve:tiny": "cross-env ENTRY=tiny webpack-dev-server --config webpack.config.dev.js --open",
+    "serve:tiny": "cross-env ENTRY=tiny webpack-dev-server --config webpack.config.dev.js",
     "build:tiny": "cross-env ENTRY=tiny webpack --config webpack.config.prd.js",
     "build:cdn": "cross-env ENTRY=cdn webpack --config webpack.config.prd.js",
     "build:obfuscator": "cross-env ENTRY=obfuscator webpack --config webpack.config.prd.js",
@@ -61,6 +61,7 @@
     "fingerprintjs2": "^2.1.4",
     "mazey": "^3.5.4",
     "mazey-wordpress-utils": "^1.2.0",
+    "qr-code-styling": "^1.6.0-rc.1",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
