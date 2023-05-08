@@ -46,7 +46,27 @@ if (window.$) {
   $.ajax(settings).done(function (response) {
     // ConCon.log(response);
   });
-  setImgWidthHeight();
+  // function setImgWidthHeight () {
+  //   ConCon.log('setImgWidthHeight');
+  //   const $ = window.jQuery || window.$;
+  //   if ($) {
+  //     $('img').each(function () {
+  //       const $this = $(this);
+  //       if (!$this) return;
+  //       const src = $this.attr('src');
+  //       if (!src) return;
+  //       const width = src.match(/width=([0-9]+[a-z%]+)/);
+  //       const height = src.match(/height=([0-9]+[a-z%]+)/);
+  //       if (width && width[1]) $this.width(width[1]);
+  //       if (height && height[1]) $this.height(height[1]);
+  //     });
+  //     return true;
+  //   }
+  //   return false;
+  // }
+  $(window).on('DOMContentLoaded', function () {
+    setImgWidthHeight();
+  });
   // ICON: https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png
   // HTML <a>: <a href="https://example.com">Example Text #date-2023-04-13</a>
   // Use jQuery to add the icon in the content of the <a>
