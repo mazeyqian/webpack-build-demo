@@ -64,9 +64,10 @@ if (window.$) {
   //   }
   //   return false;
   // }
-  $(window).on('DOMContentLoaded', function () {
-    setImgWidthHeight();
-  });
+  // Wrong
+  // $(window).on('DOMContentLoaded', function () {
+  //   ConCon.log('window.DOMContentLoaded');
+  // });
   // ICON: https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png
   // HTML <a>: <a href="https://example.com">Example Text #date-2023-04-13</a>
   // Use jQuery to add the icon in the content of the <a>
@@ -106,4 +107,8 @@ if (window.$) {
     }
   }
   addIconToA();
+  $(document).ready(function () {
+    // ConCon.log('document.ready');
+    setImgWidthHeight();
+  });
 }
