@@ -12,6 +12,8 @@ if (window.$) {
   $('.wiki-content>p>br').hide();
   // Table
   $('.wiki-content td.confluenceTd>a').after('<br />');
+  // WP .entry-content td
+  $('.entry-content td>a').after('<br />');
   // Record
   let userName, zhUserName;
   const enUserName = getCookie('username') || 'unknown';
@@ -75,8 +77,8 @@ if (window.$) {
   // And then, add CSS/Style to the <img> to make it looks better.
   // Let the ICON looks like a part of the <a> text. The size is similar to the text.
   // And the page has many <a> like this, so we need to use jQuery to do this.
-  function addIconToA () {
-    const aDom = $('.wiki-content a');
+  function addIconToA (selector = '.wiki-content') {
+    const aDom = $(`${selector} a`); // .wiki-content a');
     if (aDom.length) {
       aDom.each(function () {
         // const href = $(this).attr('href');
@@ -107,8 +109,24 @@ if (window.$) {
     }
   }
   addIconToA();
+  addIconToA('.entry-content');
+
   $(document).ready(function () {
     // ConCon.log('document.ready');
     setImgWidthHeight();
   });
+
+  // Here's a jQuery script that replaces all text "Br" in a table within the div.entry-content with <br />:
+  function replaceBrWithLineBreak (className) {
+    if (!$('.' + className).length) {
+      // console.log('Error: Element with class name ' + className + ' not found.');
+      return;
+    }
+    $('.' + className + " table td:contains('Br')").each(function () {
+      const html = $(this).html().replace(/Br/g, '<br />');
+      $(this).html(html);
+    });
+  }
+  replaceBrWithLineBreak('wiki-content');
+  replaceBrWithLineBreak('entry-content');
 }
