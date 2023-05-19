@@ -7,7 +7,9 @@ const ConCon = genCustomConsole('Confluence:');
 ConCon.log('loaded');
 
 // Area: `.wiki-content`
-if (window.$) {
+const realjQuery = window.jQuery || window.$;
+if (realjQuery) {
+  const $ = realjQuery;
   // Format
   $('.wiki-content>p>br').hide();
   // Table
@@ -78,7 +80,7 @@ if (window.$) {
   // Let the ICON looks like a part of the <a> text. The size is similar to the text.
   // And the page has many <a> like this, so we need to use jQuery to do this.
   function addIconToA (selector = '.wiki-content') {
-    const aDom = $(`${selector} a`); // .wiki-content a');
+    const aDom = $(`${selector} a`); // $('.wiki-content a'); jQuery('.entry-content a');
     if (aDom.length) {
       aDom.each(function () {
         // const href = $(this).attr('href');
@@ -111,8 +113,25 @@ if (window.$) {
   addIconToA();
   addIconToA('.entry-content');
 
-  $(document).ready(function () {
-    // ConCon.log('document.ready');
+  // $(document).ready(function () {
+  //   // ConCon.log('document.ready');
+  //   try {
+  //     // setImgWidthHeight();
+  //     setImgWidHeiBySrc();
+  //   } catch (err) {
+  //     ConCon.log('setImgWidthHeight error', err);
+  //   }
+  // });
+  // window.addEventListener('load', () => {
+  //   try {
+  //     setImgWidHeiBySrc();
+  //   } catch (err) {
+  //     ConCon.log('setImgWidthHeight error', err);
+  //   }
+  // });
+  setImgWidHeiBySrc();
+  $(window).on('load', function () {
+    ConCon.log('window.load');
     try {
       // setImgWidthHeight();
       setImgWidHeiBySrc();
