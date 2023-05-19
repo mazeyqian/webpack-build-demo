@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import { formatDate, getCookie, isNonEmptyArray, genCustomConsole } from 'mazey';
-import { setImgWidthHeight } from 'mazey-wordpress-utils';
+import { formatDate, getCookie, isNonEmptyArray, genCustomConsole, setImgWidHeiBySrc } from 'mazey';
+// import { setImgWidthHeight } from 'mazey-wordpress-utils';
 
 const ConCon = genCustomConsole('Confluence:');
 
@@ -113,7 +113,12 @@ if (window.$) {
 
   $(document).ready(function () {
     // ConCon.log('document.ready');
-    setImgWidthHeight();
+    try {
+      // setImgWidthHeight();
+      setImgWidHeiBySrc();
+    } catch (err) {
+      ConCon.log('setImgWidthHeight error', err);
+    }
   });
 
   // Here's a jQuery script that replaces all text "Br" in a table within the div.entry-content with <br />:
@@ -123,7 +128,7 @@ if (window.$) {
       return;
     }
     $('.' + className + " table td:contains('Br')").each(function () {
-      const html = $(this).html().replace(/Br/g, '<br />');
+      const html = $(this).html().replace(/Br/g, '<br style="display: inline;" />');
       $(this).html(html);
     });
   }
