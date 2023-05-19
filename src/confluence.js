@@ -131,7 +131,7 @@ if (realjQuery) {
   // });
   setImgWidHeiBySrc();
   $(window).on('load', function () {
-    ConCon.log('window.load');
+    // ConCon.log('window.load');
     try {
       // setImgWidthHeight();
       setImgWidHeiBySrc();
