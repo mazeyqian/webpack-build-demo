@@ -35,7 +35,7 @@ const Tiny = () => {
   const [tiny_link, setTinyLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
-  const [backupTinyLink, setBackupTinyLink] = useState('');
+  // const [backupTinyLink, setBackupTinyLink] = useState('');
   const [loadedLayer, setLoadedLayer] = useState(false);
   // Case: { title: 'Tiny', link: 'https://blog.mazey.net/tiny', area: 'global' }
   const [backupTinyLinks, setBackupTinyLinks] = useState([]);
@@ -175,7 +175,7 @@ const Tiny = () => {
       real_ori_link = msgLink;
     }
     // Debug - end
-    setBackupTinyLink('');
+    // setBackupTinyLink('');
     setBackupTinyLinks([]);
     setShowQRCode(false);
     if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
