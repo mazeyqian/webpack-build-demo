@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import React, { Component, useState, useEffect, useRef } from 'react';
-// import ReactDom from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -24,13 +23,12 @@ import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQue
 // <a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
 // http://blog.mazey.net/tiny/index.html?msg=<a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
 const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
-// Example: https://blog.mazey.net/
-// const prefixBaseUrl = `${location.protocol}//${location.host}/`;
 const domain = 'https://mazey.cn';
 const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
-const QRCodeFav = QRCodeFavBase64; // 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
+// It's ok yet. 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
+const QRCodeFav = QRCodeFavBase64;
 const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
@@ -45,10 +43,8 @@ const Tiny = () => {
 
   useEffect(() => {
     TinyCon.log('tiny');
-    // 标记
     localStorage.setItem('mazey_loaded_tiny', '1');
     // Load
-    // //i.mazey.net/cdn/jquery/2.1.1/jquery.min.js
     (async () => {
       if (!(window.$ || window.jQuery)) {
         await loadScript(`${libBaseUrl}/jquery/2.1.1/jquery.min.js`);
@@ -56,7 +52,6 @@ const Tiny = () => {
       await loadScript(`${libBaseUrl}/layer/layer.js`)
         .then(() => {
           setLoadedLayer(true);
-          // msg('加载完成');
         });
       const queryMsg = getQueryParam('msg');
       if (queryMsg) {
@@ -65,24 +60,6 @@ const Tiny = () => {
         msg('消息接收成功');
       }
     })();
-    // Load Backup Tiny Links
-    // const tempBackupTinyLinks = backupTinyLinks;
-    // tempBackupTinyLinks.push(
-    //   {
-    //     title: defaultTinyTitle,
-    //     link: 'https://blog.mazey.net/tiny?msg=test1',
-    //     area: '全球',
-    //     copied: false,
-    //   },
-    //   {
-    //     title: defaultTinyTitle,
-    //     link: 'https://blog.mazey.net/tiny?msg=test2',
-    //     area: '境内',
-    //     copied: false,
-    //   },
-    // );
-    // setBackupTinyLinks(tempBackupTinyLinks);
-    // convertUrlStringToQRCode('https://blog.mazey.net/tiny');
   }, []);
 
   const msg = (content, tryAgain = true) => {
@@ -127,7 +104,7 @@ const Tiny = () => {
       TinyCon.log('link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
-        btn: ['确认', '取消'] // 按钮
+        btn: ['确认', '取消']
       }, function () {
         window.open(link);
       }, function () {
@@ -144,7 +121,7 @@ const Tiny = () => {
       ok = resolve;
       fail = reject;
     });
-    if (!(isValidHttpWwwUrl(link) || isValidAnyUrl(link))) {
+    if (!isValidAnyUrl(link)) {
       TinyCon.log('link', link);
       TinyCon.log('ori_link', ori_link);
       let linkForMsg = ori_link;
@@ -155,7 +132,7 @@ const Tiny = () => {
       }
       loadedLayer && window.layer.confirm(`检测到输入${isTag ? '标签' : '文字'}，将通过短链传递：${linkForMsg}`, {
         title: '提示',
-        btn: ['确认', '取消'] // 按钮
+        btn: ['确认', '取消']
       }, function () {
         retLink = updateQueryParam(location.href, 'msg', linkForMsg);
         TinyCon.log('retLink', retLink);
@@ -190,7 +167,7 @@ const Tiny = () => {
     if (msgLink === 'cancel') {
       return;
     }
-    if (typeof msgLink === 'string' && (isValidHttpWwwUrl(msgLink) || isValidAnyUrl(msgLink))) {
+    if (typeof msgLink === 'string' && isValidAnyUrl(msgLink)) {
       real_ori_link = msgLink;
     }
     // Debug - begin
@@ -203,16 +180,13 @@ const Tiny = () => {
     setShowQRCode(false);
     if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
       TinyCon.log('ori_link before trim:', real_ori_link);
-      // setOriLink(mTrim(ori_link));
       real_ori_link = mTrim(real_ori_link);
     }
-    // TinyCon.log('real_ori_link', real_ori_link)
     loadedLayer && window.layer.load(1);
     TinyCon.log('Ultimate', real_ori_link);
     const tinyLink = await axios.post(`${domain}/server/generate/short-link`, {
       ori_link: real_ori_link,
     }).then(res => {
-      // TinyCon.log('fetchShortLink', res)
       loadedLayer && window.layer.closeAll('loading');
       const { data: { data: { tiny_link } } } = res;
       setTinyLink(tiny_link);
@@ -233,17 +207,6 @@ const Tiny = () => {
     }
     // Backup
     const bakLinks = [];
-    // const backupTinyLink = await getTinyLink(real_ori_link);
-    // TinyCon.log('Backup Tiny Link', backupTinyLink);
-    // if (backupTinyLink) {
-    //   bakLinks.push({
-    //     title: defaultTinyTitle,
-    //     link: backupTinyLink,
-    //     area: '全球',
-    //     copied: false,
-    //   });
-    //   setBackupTinyLinks(bakLinks);
-    // }
     getTinyLink(real_ori_link).then(backupTinyLink => {
       if (isValidAnyUrl(backupTinyLink)) {
         bakLinks.push({
@@ -270,7 +233,6 @@ const Tiny = () => {
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
-    // TinyCon.log('inputChange', ori_link)   npm i react react-copy-to-clipboard react-dom --save
     setOriLink(ori_link);
   };
 
@@ -281,31 +243,18 @@ const Tiny = () => {
     }
   };
 
-  // Check a given value if it is html tag
-  // Example:
-  // <a href="https://mazey.cn/t/bbg" target="_blank">xxx</a>
-  // true
-  // <img src="https://mazey.cn/t/bbg" />
-  // true
-  // http://example.com/tiny/index.html?&</>
-  // false
   const isHtmlTag = str => {
-    // It's wrong.
-    // isHtmlTag('http://example.com/tiny/index.html?&</>')
-    // true
-    // it should be false
     return /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/g.test(str);
-    // return /<[^>]+>/g.test(str);
   };
 
-  const isValidHttpWwwUrl = url => {
-    if (isHtmlTag(url)) {
-      return false;
-    }
-    // eslint-disable-next-line max-len
-    const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
-    return regIns.test(url);
-  };
+  // const isValidHttpWwwUrl = url => {
+  //   if (isHtmlTag(url)) {
+  //     return false;
+  //   }
+  //   // eslint-disable-next-line max-len
+  //   const regIns = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm;
+  //   return regIns.test(url);
+  // };
 
   const isValidAnyUrl = url => {
     if (isHtmlTag(url)) {
@@ -334,7 +283,6 @@ const Tiny = () => {
         newBackupTinyLinks[index] = backupTinyLink;
         return newBackupTinyLinks;
       });
-      // msg('成功');
     }
   };
 
@@ -343,7 +291,6 @@ const Tiny = () => {
     const qrCode = new QRCodeStyling({
       width: 200,
       height: 200,
-      // margin: 0, // 12,
       data: url,
       image: QRCodeFav,
       dotsOptions: {
@@ -359,7 +306,6 @@ const Tiny = () => {
       },
     });
     qrCode.append(ref.current);
-    // qrCode.append(document.getElementById('qr-code'));
   };
 
   return (
@@ -393,14 +339,6 @@ const Tiny = () => {
           !tiny_link ? <span className='placeholder'>生成的短链接~</span> : ''
         }
       </div>
-      {/* {
-        backupTinyLink
-          ? <div className='generated-result'>
-            <span>备用链接：</span>
-            <a href={backupTinyLink} target='_blank' title='备用链接'>{backupTinyLink}</a>
-          </div>
-          : ''
-      } */}
       {
         backupTinyLinks.map((tiny, index) => (
           <div className='generated-result is-backup' key={`${index}-${genHashCode(tiny.link)}`}>
@@ -437,7 +375,6 @@ const TinyInit = (selector = '', options = {
   const container = document.querySelector(selector);
 
   if (container) {
-    // ReactDom.render(<Tiny />, container);
     const root = createRoot(container);
     root.render(<Tiny />);
 
@@ -454,7 +391,6 @@ const TinyInit = (selector = '', options = {
   }
 };
 
-// TinyInit('#tiny-box');
 TinyInit('#tiny-box', { isGrayBackground: true });
 
 window.TINY_INIT = TinyInit;
