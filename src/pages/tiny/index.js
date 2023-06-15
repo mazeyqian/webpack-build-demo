@@ -33,6 +33,7 @@ const defaultTinyTitle = '备用链接';
 const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
+  // const [msgLink, setMsgLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   // const [backupTinyLink, setBackupTinyLink] = useState('');
@@ -40,6 +41,8 @@ const Tiny = () => {
   // Case: { title: 'Tiny', link: 'https://blog.mazey.net/tiny', area: 'global' }
   const [backupTinyLinks, setBackupTinyLinks] = useState([]);
   const ref = useRef(null);
+  // var
+  let msgLink = '';
 
   useEffect(() => {
     TinyCon.log('tiny');
@@ -122,9 +125,9 @@ const Tiny = () => {
       fail = reject;
     });
     if (!isValidAnyUrl(link)) {
-      TinyCon.log('link', link);
-      TinyCon.log('ori_link', ori_link);
-      let linkForMsg = ori_link;
+      TinyCon.log('convertToMsg link', link);
+      // TinyCon.log('ori_link', link);
+      let linkForMsg = link;
       let isTag = false;
       if (isHtmlTag(linkForMsg)) {
         linkForMsg = linkForMsg.replace(/<[^>]+>/g, '');
@@ -147,33 +150,70 @@ const Tiny = () => {
     return status;
   };
 
+  const checkMsg = async (link) => {
+    let ret = false;
+    const tempMsgLinkRet = await convertToMsg(link);
+    TinyCon.log('tempMsgLinkRet', tempMsgLinkRet);
+    if (tempMsgLinkRet === 'cancel') {
+      ret = false;
+    } else if (typeof tempMsgLinkRet === 'string' && isValidAnyUrl(tempMsgLinkRet)) {
+      // setMsgLink(tempMsgLinkRet);
+      msgLink = tempMsgLinkRet;
+      ret = true;
+    } else if (typeof tempMsgLinkRet === 'string' && tempMsgLinkRet.includes('localhost:9202')) {
+      // Debug
+      // setMsgLink(tempMsgLinkRet);
+      msgLink = tempMsgLinkRet;
+      ret = true;
+    }
+    return ret;
+  };
+
   const fetchShortLink = async () => {
     let real_ori_link = '';
-    if (ori_link === '') {
+    // if (!(ori_link.includes('http') || isValidAnyUrl(ori_link))) {
+    //   // Quickly Visit
+    //   if (hashCodeToLink(ori_link)) {
+    //     return;
+    //   }
+    //   real_ori_link = `http://${mTrim(ori_link)}`;
+    // } else {
+    //   real_ori_link = mTrim(ori_link);
+    // }
+    TinyCon.log(`ori_link_${ori_link}_`);
+    const trimOriLink = mTrim(ori_link);
+    const suppleHttp = `http://${trimOriLink}`;
+    if (trimOriLink === '') {
       msg('不能为空');
       return;
-    }
-    if (!(ori_link.includes('http') || isValidAnyUrl(ori_link))) {
-      // Quickly Visit
-      if (hashCodeToLink(ori_link)) {
-        return;
-      }
-      real_ori_link = `http://${mTrim(ori_link)}`;
+    } else if (isValidAnyUrl(trimOriLink)) {
+      real_ori_link = trimOriLink;
+    } else if (hashCodeToLink(trimOriLink)) {
+      return;
+    } else if (await checkMsg(trimOriLink)) {
+      real_ori_link = msgLink;
+    } else if (isValidAnyUrl(suppleHttp)) {
+      real_ori_link = suppleHttp;
     } else {
-      real_ori_link = ori_link;
-    }
-    const msgLink = await convertToMsg(real_ori_link);
-    TinyCon.log('msgLink', msgLink);
-    if (msgLink === 'cancel') {
+      // Quickly Visit
+      // if (!hashCodeToLink(trimOriLink)) {}
+      msg('请输入正确的链接');
       return;
     }
-    if (typeof msgLink === 'string' && isValidAnyUrl(msgLink)) {
-      real_ori_link = msgLink;
-    }
-    // Debug - begin
-    if (typeof msgLink === 'string' && msgLink.includes('localhost:9202')) {
-      real_ori_link = msgLink;
-    }
+    setOriLink(real_ori_link);
+    // Stop using `ori_link` and start using `real_ori_link`.
+    // const msgLink = await convertToMsg(real_ori_link);
+    // TinyCon.log('msgLink', msgLink);
+    // if (msgLink === 'cancel') {
+    //   return;
+    // }
+    // if (typeof msgLink === 'string' && isValidAnyUrl(msgLink)) {
+    //   real_ori_link = msgLink;
+    // }
+    // // Debug - begin
+    // if (typeof msgLink === 'string' && msgLink.includes('localhost:9202')) {
+    //   real_ori_link = msgLink;
+    // }
     // Debug - end
     // setBackupTinyLink('');
     setBackupTinyLinks([]);
@@ -244,7 +284,7 @@ const Tiny = () => {
   };
 
   const isHtmlTag = str => {
-    return /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/g.test(str);
+    return /<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/g.test(str);
   };
 
   // const isValidHttpWwwUrl = url => {
