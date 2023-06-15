@@ -34,6 +34,7 @@ const Tiny = () => {
   const [ori_link, setOriLink] = useState('');
   const [tiny_link, setTinyLink] = useState('');
   // const [msgLink, setMsgLink] = useState('');
+  const [queryMsg, setQueryMsg] = useState('');
   const [copied, setCopied] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   // const [backupTinyLink, setBackupTinyLink] = useState('');
@@ -41,7 +42,7 @@ const Tiny = () => {
   // Case: { title: 'Tiny', link: 'https://blog.mazey.net/tiny', area: 'global' }
   const [backupTinyLinks, setBackupTinyLinks] = useState([]);
   const ref = useRef(null);
-  // var
+  // Variates
   let msgLink = '';
 
   useEffect(() => {
@@ -56,10 +57,11 @@ const Tiny = () => {
         .then(() => {
           setLoadedLayer(true);
         });
-      const queryMsg = getQueryParam('msg');
-      if (queryMsg) {
-        setOriLink(queryMsg);
-        setTinyLink(queryMsg);
+      const tempQueryMsg = getQueryParam('msg');
+      if (tempQueryMsg) {
+        // setOriLink(tempQueryMsg);
+        setTinyLink(tempQueryMsg);
+        setQueryMsg(tempQueryMsg);
         msg('消息接收成功');
       }
     })();
@@ -355,14 +357,15 @@ const Tiny = () => {
         <input value={ori_link}
           onChange={inputChange}
           onKeyDown={handleKeyDown}
-          placeholder='请输入长链接' autoFocus
+          placeholder={queryMsg ? '消息接收成功，复制下面的文字，或者在此输入长链接或短文字' : '请输入长链接'}
+          autoFocus={!queryMsg}
         />
         <button type='button' onClick={fetchShortLink}>生成</button>
       </div>
       <div className='result-show'>
         {/* 短链接 */}
         {
-          tiny_link && <input value={tiny_link} placeholder='请复制短链接' onChange={() => {}} />
+          tiny_link && <input value={tiny_link} placeholder='请复制短链接' onChange={() => {}} autoFocus={!!queryMsg} />
         }
         {/* 复制按钮 */}
         {
