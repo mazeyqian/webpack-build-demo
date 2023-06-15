@@ -8,7 +8,7 @@ import QRCodeStyling from 'qr-code-styling';
 import { QRCodeFavBase64 } from './images.js';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -25,7 +25,7 @@ import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQue
 const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
 const domain = 'https://mazey.cn';
 const newDomain = 'https://i.mazey.net';
-const backupDomain = 'https://feperf.com';
+const backupDomain = 'https://s.feperf.com';
 const libBaseUrl = '//i.mazey.net/lib';
 // It's ok yet. 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
 const QRCodeFav = QRCodeFavBase64;
@@ -257,12 +257,13 @@ const Tiny = () => {
   // };
 
   const isValidAnyUrl = url => {
-    if (isHtmlTag(url)) {
-      return false;
-    }
+    // if (isHtmlTag(url)) {
+    //   return false;
+    // }
     // eslint-disable-next-line max-len
-    const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9\u4E00-\u9FA5()!@:%_+.~#?&//=]*)/gm;
-    return regIns.test(url);
+    // const regIns = /[a-zA-Z0-9]+:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\b([-a-zA-Z0-9\u4E00-\u9FA5()!@:%_+.~#?&//=]*)/gm;
+    // return regIns.test(url);
+    return isValidUrl(url);
   };
 
   // Detect including Chinese?
