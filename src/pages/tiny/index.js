@@ -139,7 +139,9 @@ const Tiny = () => {
         title: '提示',
         btn: ['确认', '取消']
       }, function () {
-        retLink = updateQueryParam(location.href, 'msg', linkForMsg);
+        TinyCon.log('linkForMsg', linkForMsg);
+        const enMsg = encodeURIComponent(linkForMsg);
+        retLink = updateQueryParam(location.href, 'msg', enMsg);
         TinyCon.log('retLink', retLink);
         ok(retLink);
       }, function () {
