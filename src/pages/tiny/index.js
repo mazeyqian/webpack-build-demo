@@ -194,10 +194,10 @@ const Tiny = () => {
       real_ori_link = trimOriLink;
     } else if (hashCodeToLink(trimOriLink)) {
       return;
-    } else if (await checkMsg(trimOriLink)) {
-      real_ori_link = msgLink;
     } else if (isValidAnyUrl(suppleHttp)) {
       real_ori_link = suppleHttp;
+    } else if (await checkMsg(trimOriLink)) {
+      real_ori_link = msgLink;
     } else {
       // Quickly Visit
       // if (!hashCodeToLink(trimOriLink)) {}
