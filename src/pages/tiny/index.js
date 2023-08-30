@@ -228,11 +228,9 @@ const Tiny = () => {
     }
     loadedLayer && window.layer.load(1);
     TinyCon.log('Ultimate', real_ori_link);
-    const tinyLink = await axios.post(`${domain}/server/generate/short-link`, {
-      ori_link: real_ori_link,
-    }).then(res => {
+    const tinyLink = await getTinyLink(real_ori_link).then(link => {
       loadedLayer && window.layer.closeAll('loading');
-      const { data: { data: { tiny_link } } } = res;
+      const tiny_link = link;
       setTinyLink(tiny_link);
       setCopied(false);
       msg('成功');
@@ -250,30 +248,30 @@ const Tiny = () => {
       }, 500);
     }
     // Backup
-    const bakLinks = [];
-    getTinyLink(real_ori_link).then(backupTinyLink => {
-      if (isValidAnyUrl(backupTinyLink)) {
-        bakLinks.push({
-          title: defaultTinyTitle,
-          link: backupTinyLink,
-          area: '全球',
-          copied: false,
-        });
-        setBackupTinyLinks(deepCopyObject(bakLinks));
-      }
-    });
-    getNewTinyLink(real_ori_link).then(backupTinyLink => {
-      if (isValidAnyUrl(backupTinyLink)) {
-        bakLinks.push({
-          title: defaultTinyTitle,
-          // link: backupTinyLink.replace('mazey.cn', 'i.mazey.net'),
-          link: backupTinyLink,
-          area: '境内',
-          copied: false,
-        });
-        setBackupTinyLinks(deepCopyObject(bakLinks));
-      }
-    });
+    // const bakLinks = [];
+    // getTinyLink(real_ori_link).then(backupTinyLink => {
+    //   if (isValidAnyUrl(backupTinyLink)) {
+    //     bakLinks.push({
+    //       title: defaultTinyTitle,
+    //       link: backupTinyLink,
+    //       area: '全球',
+    //       copied: false,
+    //     });
+    //     setBackupTinyLinks(deepCopyObject(bakLinks));
+    //   }
+    // });
+    // getNewTinyLink(real_ori_link).then(backupTinyLink => {
+    //   if (isValidAnyUrl(backupTinyLink)) {
+    //     bakLinks.push({
+    //       title: defaultTinyTitle,
+    //       // link: backupTinyLink.replace('mazey.cn', 'i.mazey.net'),
+    //       link: backupTinyLink,
+    //       area: '境内',
+    //       copied: false,
+    //     });
+    //     setBackupTinyLinks(deepCopyObject(bakLinks));
+    //   }
+    // });
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
