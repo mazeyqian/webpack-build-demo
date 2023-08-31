@@ -42,3 +42,6 @@ package-lock.json
 *.secret.html
 *.secret.scss
 *.secret.sh
+
+# Other Files
+lib/*.txt
