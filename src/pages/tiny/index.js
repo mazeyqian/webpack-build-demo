@@ -8,7 +8,7 @@ import QRCodeStyling from 'qr-code-styling';
 import { QRCodeFavBase64 } from './images.js';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -194,7 +194,7 @@ const Tiny = () => {
       real_ori_link = trimOriLink;
     } else if (hashCodeToLink(trimOriLink)) {
       return;
-    } else if (isValidAnyUrl(suppleHttp)) {
+    } else if (isValidHttpUrl(suppleHttp)) {
       real_ori_link = suppleHttp;
     } else if (await checkMsg(trimOriLink)) {
       real_ori_link = msgLink;
