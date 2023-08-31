@@ -1,5 +1,0 @@
-/*!
- * mazey v3.6.7
- * (c) 2018-2023 Mazey Chu
- * Released under the MIT License.
- */
