@@ -45,3 +45,6 @@ package-lock.json
 
 # Other Files
 lib/*.txt
+lib/*.html
+lib/*.css
+!lib/tiny.css
