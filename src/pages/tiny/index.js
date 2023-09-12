@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCodeStyling from 'qr-code-styling';
-import { QRCodeFavBase64 } from './images.js';
+// import { QRCodeFavBase64 } from './images.js';
 import './normalize.scss';
 import './tiny.scss';
 import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl } from 'mazey';
@@ -23,9 +23,10 @@ import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQue
 // <a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
 // http://blog.mazey.net/tiny/index.html?msg=<a href="https://blog.mazey.net/tiny" target="_blank">xxx</a><br/>
 const TinyCon = genCustomConsole('TinyCon:', { showDate: true });
-const domain = 'https://mazey.cn';
-const newDomain = 'https://i.mazey.net';
+// const domain = 'https://mazey.cn';
+// const newDomain = 'https://i.mazey.net';
 const backupDomain = 'https://s.feperf.com';
+const foreignBaseUrl = window.TINY_FOREIGN_BASE_URL;
 const libBaseUrl = '//i.mazey.net/lib';
 // It's ok yet. 'https://i.mazey.net/icon/fav/logo-dark-circle.svg';
 // fav/logo-dark-circle-32x32.png
@@ -49,7 +50,7 @@ const Tiny = () => {
   let msgLink = '';
 
   useEffect(() => {
-    TinyCon.log('tiny');
+    TinyCon.log('Start');
     localStorage.setItem('mazey_loaded_tiny', '1');
     // Load
     (async () => {
@@ -76,40 +77,54 @@ const Tiny = () => {
     } else if (window.layer && typeof window.layer === 'object') {
       window.layer.msg(content, { time: 2 * 1000 });
     } else if (tryAgain === true) {
-      TinyCon.log('tryAgain', tryAgain);
+      TinyCon.log('Try Again', tryAgain);
       setTimeout(() => {
         msg(content, false);
       }, 1000);
     }
   };
 
-  const getTinyLink = (oriLink) => {
-    return axios.post(`${backupDomain}/api/gee/generate-short-link`, {
+  const getTinyLink = (oriLink, baseUrl) => {
+    const params = {
       ori_link: oriLink,
-    })
+    };
+    if (baseUrl) {
+      Object.assign(params, { base_url: baseUrl });
+    }
+    return axios.post(`${backupDomain}/api/gee/generate-short-link`, params)
       .then(res => {
-        TinyCon.log('Tiny Link', res.data.tiny_link);
-        return res.data.tiny_link;
+        let link = res.data.tiny_link;
+        TinyCon.log('Link', link);
+        link = handleSameServer(link, backupDomain, baseUrl);
+        return link;
       });
   };
 
-  const getNewTinyLink = (oriLink) => {
-    return axios.post(`${newDomain}/server/generate/short-link`, {
-      ori_link: oriLink,
-    }).then(res => {
-      let { data: { data: { tiny_link } } } = res;
-      if (typeof tiny_link === 'string' && tiny_link.length > 0 && tiny_link.includes('mazey.cn')) {
-        tiny_link = tiny_link.replace('mazey.cn', 'i.mazey.net');
-      }
-      TinyCon.log('getNewTinyLink', tiny_link);
-      return tiny_link;
-    });
+  const handleSameServer = (ultimateLink, primaryBaseUrl, backupBaseUrl) => {
+    if (!backupBaseUrl) return ultimateLink;
+    if (!backupDomain) return ultimateLink;
+    if (ultimateLink.includes(primaryBaseUrl)) {
+      return ultimateLink.replace(primaryBaseUrl, backupBaseUrl);
+    }
   };
+
+  // const getNewTinyLink = (oriLink) => {
+  //   return axios.post(`${newDomain}/server/generate/short-link`, {
+  //     ori_link: oriLink,
+  //   }).then(res => {
+  //     let { data: { data: { tiny_link } } } = res;
+  //     if (typeof tiny_link === 'string' && tiny_link.length > 0 && tiny_link.includes('mazey.cn')) {
+  //       tiny_link = tiny_link.replace('mazey.cn', 'i.mazey.net');
+  //     }
+  //     TinyCon.log('getNewTinyLink', tiny_link);
+  //     return tiny_link;
+  //   });
+  // };
 
   const hashCodeToLink = hashCode => {
     if (typeof hashCode === 'string' && hashCode.length <= 4 && isValidENCode(hashCode)) {
-      const link = `${domain}/t/${hashCode.toLowerCase()}`;
-      TinyCon.log('link', link);
+      const link = `${backupDomain}/t/${hashCode.toLowerCase()}`;
+      TinyCon.log('Link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
         btn: ['确认', '取消']
@@ -130,7 +145,7 @@ const Tiny = () => {
       fail = reject;
     });
     if (!isValidAnyUrl(link)) {
-      TinyCon.log('convertToMsg link', link);
+      TinyCon.log('convertToMsg Link', link);
       // TinyCon.log('ori_link', link);
       let linkForMsg = link;
       let isTag = false;
@@ -187,7 +202,7 @@ const Tiny = () => {
     // } else {
     //   real_ori_link = mTrim(ori_link);
     // }
-    TinyCon.log(`ori_link_${ori_link}_`);
+    TinyCon.log(`Ori Link ${ori_link}`);
     const trimOriLink = mTrim(ori_link);
     const suppleHttp = `http://${trimOriLink}`;
     if (trimOriLink === '') {
@@ -226,7 +241,7 @@ const Tiny = () => {
     setBackupTinyLinks([]);
     setShowQRCode(false);
     if (typeof real_ori_link === 'string' && real_ori_link.includes(' ')) {
-      TinyCon.log('ori_link before trim:', real_ori_link);
+      TinyCon.log('ori_link Before Trim', real_ori_link);
       real_ori_link = mTrim(real_ori_link);
     }
     loadedLayer && window.layer.load(1);
@@ -251,7 +266,20 @@ const Tiny = () => {
       }, 500);
     }
     // Backup
-    // const bakLinks = [];
+    const bakLinks = [];
+    if (foreignBaseUrl) {
+      getTinyLink(real_ori_link, foreignBaseUrl).then(link => {
+        if (isValidHttpUrl(link)) {
+          bakLinks.push({
+            title: defaultTinyTitle,
+            link,
+            area: '全球',
+            copied: false,
+          });
+          setBackupTinyLinks([...bakLinks]);
+        }
+      });
+    }
     // getTinyLink(real_ori_link).then(backupTinyLink => {
     //   if (isValidAnyUrl(backupTinyLink)) {
     //     bakLinks.push({
@@ -420,11 +448,9 @@ const TinyInit = (selector = '', options = {
   }
   const { isGrayBackground } = options;
   const container = document.querySelector(selector);
-
   if (container) {
     const root = createRoot(container);
     root.render(<Tiny />);
-
     if (isGrayBackground) {
       addStyle(
         `
