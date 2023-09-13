@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCodeStyling from 'qr-code-styling';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl, genStyleString } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl, genStyleString, getBrowserInfo } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -283,11 +283,10 @@ const Tiny = () => {
 
   const convertUrlStringToQRCode = url => {
     TinyCon.log('convertUrlStringToQRCode', url);
-    const qrCode = new QRCodeStyling({
+    const qrCodeParams = {
       width: 200,
       height: 200,
       data: url,
-      image: QRCodeFav,
       dotsOptions: {
         color: '#111111',
         type: 'square',
@@ -295,11 +294,18 @@ const Tiny = () => {
       backgroundOptions: {
         color: '#ffffff',
       },
-      imageOptions: {
-        crossOrigin: 'anonymous',
-        margin: 0,
-      },
-    });
+    };
+    const { system } = getBrowserInfo();
+    if (system !== 'ios') {
+      Object.assign(qrCodeParams, {
+        image: QRCodeFav,
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: 0,
+        },
+      });
+    }
+    const qrCode = new QRCodeStyling(qrCodeParams);
     qrCode.append(ref.current);
   };
 
