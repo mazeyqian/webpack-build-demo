@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCodeStyling from 'qr-code-styling';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl, genStyleString } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -373,14 +373,11 @@ const TinyInit = (selector = '', options = {
     const root = createRoot(container);
     root.render(<Tiny />);
     if (isGrayBackground) {
-      addStyle(
-        `
-          #tiny-box {
-            background-color: #eee;
-            border-radius: 4px;
-          }
-        `
-      );
+      const styleStr = genStyleString('#tiny-box', [
+        'background-color: #eee',
+        'border-radius: 4px',
+      ]);
+      addStyle(styleStr);
     }
   }
 };
