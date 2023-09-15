@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCodeStyling from 'qr-code-styling';
 import './normalize.scss';
 import './tiny.scss';
-import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, deepCopyObject, isValidUrl, isValidHttpUrl, genStyleString } from 'mazey';
+import { addStyle, genCustomConsole, getQueryParam, loadScript, mTrim, updateQueryParam, genHashCode, isValidUrl, isValidHttpUrl, genStyleString, deepCopy } from 'mazey';
 
 // Test Examples:
 // http://localhost:9202/tiny.html
@@ -82,20 +82,20 @@ const Tiny = () => {
     }
     return axios.post(`${backupDomain}/api/gee/generate-short-link`, params)
       .then(res => {
-        let link = res.data.tiny_link;
+        const link = res.data.tiny_link;
         TinyCon.log('Link', link);
-        link = handleSameServer(link, backupDomain, baseUrl);
+        // link = handleSameServer(link, backupDomain, baseUrl);
         return link;
       });
   };
 
-  const handleSameServer = (ultimateLink, primaryBaseUrl, backupBaseUrl) => {
-    if (!backupBaseUrl) return ultimateLink;
-    if (!backupDomain) return ultimateLink;
-    if (ultimateLink.includes(primaryBaseUrl)) {
-      return ultimateLink.replace(primaryBaseUrl, backupBaseUrl);
-    }
-  };
+  // const handleSameServer = (ultimateLink, primaryBaseUrl, backupBaseUrl) => {
+  //   if (!backupBaseUrl) return ultimateLink;
+  //   if (!backupDomain) return ultimateLink;
+  //   if (ultimateLink.includes(primaryBaseUrl)) {
+  //     return ultimateLink.replace(primaryBaseUrl, backupBaseUrl);
+  //   }
+  // };
 
   const hashCodeToLink = hashCode => {
     if (typeof hashCode === 'string' && hashCode.length <= 4 && isValidENCode(hashCode)) {
@@ -224,7 +224,9 @@ const Tiny = () => {
             area: '全球',
             copied: false,
           });
-          setBackupTinyLinks([...bakLinks]);
+          // setBackupTinyLinks([...bakLinks]);
+          setBackupTinyLinks(deepCopy(bakLinks));
+          TinyCon.log('backupTinyLinks', backupTinyLinks);
         }
       });
     }
