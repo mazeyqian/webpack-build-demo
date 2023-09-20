@@ -146,7 +146,7 @@ if (realjQuery) {
       // console.log('Error: Element with class name ' + className + ' not found.');
       return;
     }
-    $('.' + className + " table td:contains('Br')").each(function () {
+    $('.' + className + ' table td:contains(\'Br\')').each(function () {
       const html = $(this).html().replace(/Br/g, '<br style="display: inline;" />');
       $(this).html(html);
     });
