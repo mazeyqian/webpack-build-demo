@@ -36,11 +36,11 @@ if (realjQuery) {
     }
   }
   const settings = {
-    url: 'https://i.mazey.net/server/log/add',
+    url: decodeURIComponent('https%3A%2F%2Fi.mazey.net%2Fserver%2Flog%2Fadd'),
     method: 'POST',
     timeout: 0,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     data: JSON.stringify({
       log_type: 'confluence',
@@ -90,7 +90,7 @@ if (realjQuery) {
           // Error
           // $(this).append('<img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png" />');
           // Replace `#date-` with <img>
-          $(this).html($(this).html().replace('#date-', '<img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png" />'));
+          $(this).html($(this).html().replace('#date-', '<img src="https://i.mazey.net/uploads/2023/04/date-blue.png" />'));
           // Add CSS/Style to the <img>
           // The ICON looks like a part of the <a> text. The size is similar to the text.
           // The ICON looks higher than the text, Please help me to adjust it.

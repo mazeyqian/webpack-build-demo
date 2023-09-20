@@ -63,7 +63,7 @@ if (!Array.prototype.reduce) {
         k++;
       }
       return value;
-    }
+    },
   });
 }
 
@@ -164,14 +164,14 @@ export class Style {
       for (let i = 0, m = rightBgcImgs.length; i < m; ++i) {
         bgcImgs.push({
           direction: 'right',
-          imgUrl: rightBgcImgs[i]
+          imgUrl: rightBgcImgs[i],
         });
       }
     } else {
       for (let i = 0, m = leftBgcImgs.length; i < m; ++i) {
         bgcImgs.push({
           direction: 'left',
-          imgUrl: leftBgcImgs[i]
+          imgUrl: leftBgcImgs[i],
         });
       }
     }
@@ -246,7 +246,7 @@ export class Container {
               '私密：',
               `<img
               style="width: 1em; height: 1em; vertical-align: -.11em; margin-right: 0.2em;"
-              src="${prefixBaseUrl}/wp-content/uploads/2019/05/mazey-punch-card.png">`
+              src="${prefixBaseUrl}/wp-content/uploads/2019/05/mazey-punch-card.png">`,
             );
         }
       });
@@ -271,11 +271,11 @@ export class Container {
     let visitorBrowse = getLocal('visitor_browse') || [];
     const url = getDomain({
       url: location.href,
-      rules: ['origin', 'pathname', 'search']
+      rules: ['origin', 'pathname', 'search'],
     });
     const homeUrl = getDomain({
       url: location.href,
-      rules: ['origin']
+      rules: ['origin'],
     }) + '/';
     const title = document.title;
     visitorBrowse = new Map(visitorBrowse);
@@ -285,7 +285,7 @@ export class Container {
     } else {
       visitorBrowse.set(url, {
         title,
-        timestamps: [Date.now()]
+        timestamps: [Date.now()],
       });
     }
     setLocal('visitor_browse', [...visitorBrowse]);

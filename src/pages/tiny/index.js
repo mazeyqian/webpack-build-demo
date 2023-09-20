@@ -116,7 +116,7 @@ const Tiny = () => {
       TinyCon.log('Link', link);
       loadedLayer && window.layer.confirm(`检测到输入短字符，将跳转至：${link}`, {
         title: '提示',
-        btn: ['确认', '取消']
+        btn: ['确认', '取消'],
       }, function () {
         window.open(link);
       }, function () {
@@ -143,7 +143,7 @@ const Tiny = () => {
       }
       loadedLayer && window.layer.confirm(`检测到输入${isTag ? '标签' : '文字'}，将通过短链传递：${linkForMsg}`, {
         title: '提示',
-        btn: ['确认', '取消']
+        btn: ['确认', '取消'],
       }, function () {
         TinyCon.log('linkForMsg', linkForMsg);
         const enMsg = encodeURIComponent(linkForMsg);
