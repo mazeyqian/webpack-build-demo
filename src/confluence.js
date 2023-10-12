@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import { formatDate, getCookie, isNonEmptyArray, genCustomConsole, setImgWidHeiBySrc } from 'mazey';
-// import { setImgWidthHeight } from 'mazey-wordpress-utils';
 
 const ConCon = genCustomConsole('Confluence:');
 
@@ -50,45 +49,16 @@ if (realjQuery) {
   $.ajax(settings).done(function (response) {
     // ConCon.log(response);
   });
-  // function setImgWidthHeight () {
-  //   ConCon.log('setImgWidthHeight');
-  //   const $ = window.jQuery || window.$;
-  //   if ($) {
-  //     $('img').each(function () {
-  //       const $this = $(this);
-  //       if (!$this) return;
-  //       const src = $this.attr('src');
-  //       if (!src) return;
-  //       const width = src.match(/width=([0-9]+[a-z%]+)/);
-  //       const height = src.match(/height=([0-9]+[a-z%]+)/);
-  //       if (width && width[1]) $this.width(width[1]);
-  //       if (height && height[1]) $this.height(height[1]);
-  //     });
-  //     return true;
-  //   }
-  //   return false;
-  // }
-  // Wrong
-  // $(window).on('DOMContentLoaded', function () {
-  //   ConCon.log('window.DOMContentLoaded');
-  // });
-  // ICON: https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png
-  // HTML <a>: <a href="https://example.com">Example Text #date-2023-04-13</a>
-  // Use jQuery to add the icon in the content of the <a>
-  // Example: <a href="https://example.com">Example Text <img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png">2023-04-13</a>
   // And then, add CSS/Style to the <img> to make it looks better.
   // Let the ICON looks like a part of the <a> text. The size is similar to the text.
   // And the page has many <a> like this, so we need to use jQuery to do this.
   function addIconToA (selector = '.wiki-content') {
-    const aDom = $(`${selector} a`); // $('.wiki-content a'); jQuery('.entry-content a');
+    const aDom = $(`${selector} a`);
     if (aDom.length) {
       aDom.each(function () {
-        // const href = $(this).attr('href');
         // It's <a> text content instead of <a> href
         const href = $(this).text();
         if (href.includes('#date-')) {
-          // Error
-          // $(this).append('<img src="https://blog.mazey.net/wp-content/uploads/2023/04/date-blue.png" />');
           // Replace `#date-` with <img>
           $(this).html($(this).html().replace('#date-', '<img src="https://i.mazey.net/uploads/2023/04/date-blue.png" />'));
           // Add CSS/Style to the <img>
@@ -112,42 +82,32 @@ if (realjQuery) {
   }
   addIconToA();
   addIconToA('.entry-content');
-
-  // $(document).ready(function () {
-  //   // ConCon.log('document.ready');
-  //   try {
-  //     // setImgWidthHeight();
-  //     setImgWidHeiBySrc();
-  //   } catch (err) {
-  //     ConCon.log('setImgWidthHeight error', err);
-  //   }
-  // });
-  // window.addEventListener('load', () => {
-  //   try {
-  //     setImgWidHeiBySrc();
-  //   } catch (err) {
-  //     ConCon.log('setImgWidthHeight error', err);
-  //   }
-  // });
   setImgWidHeiBySrc();
   $(window).on('load', function () {
-    // ConCon.log('window.load');
     try {
-      // setImgWidthHeight();
       setImgWidHeiBySrc();
     } catch (err) {
       ConCon.log('setImgWidthHeight error', err);
     }
   });
-
   // Here's a jQuery script that replaces all text "Br" in a table within the div.entry-content with <br />:
   function replaceBrWithLineBreak (className) {
     if (!$('.' + className).length) {
       // console.log('Error: Element with class name ' + className + ' not found.');
       return;
     }
+    // Br or __BR__
+    // Previously, I used `Br`
+    // Deprecated, Remove it later.
     $('.' + className + ' table td:contains(\'Br\')').each(function () {
+      // If it encounters `Browser`, `Break`, `Brave`, `Break`, do not replace it.
+      if ($(this).text().match(/(Browser|Break|Brave|Break)/)) return;
       const html = $(this).html().replace(/Br/g, '<br style="display: inline;" />');
+      $(this).html(html);
+    });
+    // Now, I use `__BR__` to replace `Br`
+    $('.' + className + ' table td:contains(\'__BR__\')').each(function () {
+      const html = $(this).html().replace(/__BR__/g, '<br style="display: inline;" />');
       $(this).html(html);
     });
   }
