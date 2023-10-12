@@ -60,7 +60,8 @@ if (realjQuery) {
         const href = $(this).text();
         if (href.includes('#date-')) {
           // Replace `#date-` with <img>
-          $(this).html($(this).html().replace('#date-', '<img src="https://i.mazey.net/uploads/2023/04/date-blue.png" />'));
+          const imgSrc = decodeURIComponent('https%3A%2F%2Fi.mazey.net%2Fuploads%2F2023%2F04%2Fdate-blue.png');
+          $(this).html($(this).html().replace('#date-', `<img src="${imgSrc}" />`));
           // Add CSS/Style to the <img>
           // The ICON looks like a part of the <a> text. The size is similar to the text.
           // The ICON looks higher than the text, Please help me to adjust it.
