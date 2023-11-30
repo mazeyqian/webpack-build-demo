@@ -11,7 +11,7 @@ const plugins = [];
 
 module.exports = {
   entry: {
-    [ENTRY]: ENTRY_FILE
+    [ENTRY]: ENTRY_FILE,
   },
   output: {
     filename: '[name].js',
@@ -22,7 +22,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
     ],
   },

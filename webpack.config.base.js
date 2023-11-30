@@ -22,7 +22,7 @@ const plugins = [
     filename: path.resolve(__dirname, `lib/${ENTRY}.html`),
     template: path.resolve(__dirname, `${ENTRY_PATH}index.html`),
     inject: true,
-    chunksSortMode: 'auto'
+    chunksSortMode: 'auto',
   }),
   // new CleanWebpackPlugin({
   //   cleanAfterEveryBuildPatterns: ['./*.css'],
@@ -36,13 +36,13 @@ if (ENTRY === 'obfuscator') {
     new WebpackObfuscator({
       rotateStringArray: true,
       stringArrayEncoding: ['base64'],
-    }, ['excluded_bundle_name.js'])
+    }, ['excluded_bundle_name.js']),
   );
 }
 
 module.exports = {
   entry: {
-    [ENTRY]: `${ENTRY_PATH}index.js`
+    [ENTRY]: `${ENTRY_PATH}index.js`,
   },
   output: {
     filename: '[name].js',
@@ -53,7 +53,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.s[ac]ss$/i,
