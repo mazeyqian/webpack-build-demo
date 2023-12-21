@@ -97,7 +97,7 @@ if (realjQuery) {
       // console.log('Error: Element with class name ' + className + ' not found.');
       return;
     }
-    // Br or __BR__
+    // Br or BRR
     // Previously, I used `Br`
     // Deprecated, Remove it later.
     $('.' + className + ' table td:contains(\'Br\')').each(function () {
@@ -106,9 +106,9 @@ if (realjQuery) {
       const html = $(this).html().replace(/Br/g, '<br style="display: inline;" />');
       $(this).html(html);
     });
-    // Now, I use `__BR__` to replace `Br`
-    $('.' + className + ' table td:contains(\'__BR__\')').each(function () {
-      const html = $(this).html().replace(/__BR__/g, '<br style="display: inline;" />');
+    // Now, I use `BRR` to replace `Br`
+    $('.' + className + ' table td:contains(\'BRR\')').each(function () {
+      const html = $(this).html().replace(/BRR/g, '<br style="display: inline;" />');
       $(this).html(html);
     });
   }
