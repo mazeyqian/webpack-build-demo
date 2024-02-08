@@ -90,6 +90,10 @@ const Tiny = () => {
     const params = {
       ori_link: oriLink,
     };
+    const oneTime = getQueryParam('one_time');
+    if (oneTime === '1') {
+      Object.assign(params, { one_time: true });
+    }
     if (baseUrl) {
       Object.assign(params, { base_url: baseUrl });
     }
@@ -97,18 +101,9 @@ const Tiny = () => {
       .then(res => {
         const link = res.data.tiny_link;
         TinyCon.log('Link', link);
-        // link = handleSameServer(link, backupDomain, baseUrl);
         return link;
       });
   };
-
-  // const handleSameServer = (ultimateLink, primaryBaseUrl, backupBaseUrl) => {
-  //   if (!backupBaseUrl) return ultimateLink;
-  //   if (!backupDomain) return ultimateLink;
-  //   if (ultimateLink.includes(primaryBaseUrl)) {
-  //     return ultimateLink.replace(primaryBaseUrl, backupBaseUrl);
-  //   }
-  // };
 
   const hashCodeToLink = hashCode => {
     if (typeof hashCode === 'string' && hashCode.length <= 4 && isValidENCode(hashCode)) {
@@ -243,18 +238,6 @@ const Tiny = () => {
         }
       });
     }
-    // getNewTinyLink(real_ori_link).then(backupTinyLink => {
-    //   if (isValidAnyUrl(backupTinyLink)) {
-    //     bakLinks.push({
-    //       title: defaultTinyTitle,
-    //       // link: backupTinyLink.replace('mazey.cn', 'i.mazey.net'),
-    //       link: backupTinyLink,
-    //       area: '境内',
-    //       copied: false,
-    //     });
-    //     setBackupTinyLinks(deepCopyObject(bakLinks));
-    //   }
-    // });
   };
 
   const inputChange = ({ target: { value: ori_link } }) => {
@@ -275,10 +258,6 @@ const Tiny = () => {
   const isValidAnyUrl = url => {
     return isValidUrl(url);
   };
-
-  // const hasChinese = str => {
-  //   return /[\u4E00-\u9FA5]+/g.test(str);
-  // };
 
   const isValidENCode = str => {
     return /^[a-zA-Z]+$/g.test(str);
