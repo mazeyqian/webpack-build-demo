@@ -1,7 +1,7 @@
 {
-  "name": "webpack-build-demo",
+  "name": "mazey-polestar",
   "version": "1.0.2",
-  "description": "A Demo.",
+  "description": "A Demo for Webpack Build",
   "main": "src/index.js",
   "scripts": {
     "build:index": "cross-env ENTRY=index webpack --config webpack.config.prd.js",
@@ -13,7 +13,8 @@
     "watch:confluence": "cross-env ENTRY=confluence webpack watch --mode=development --config webpack.config.lib.js",
     "build:confluence": "cross-env ENTRY=confluence webpack --mode=production --config webpack.config.lib.js",
     "lint-and-fix": "eslint ./src/**/*.js --ext 'js' --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo 'Nothing to build!' && exit 0",
+    "test": "echo 'Ready to write and run tests?' && exit 0"
   },
   "repository": {
     "type": "git",
