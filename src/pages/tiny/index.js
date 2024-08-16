@@ -20,6 +20,7 @@ import {
   genStyleString,
   deepCopy,
   getBrowserInfo,
+  convertCamelToUnder,
 } from 'mazey';
 
 // Test Examples:
@@ -86,11 +87,16 @@ const Tiny = () => {
     }
   };
 
+  const getQueryParamUltimate = param => {
+    const underParam = convertCamelToUnder(param);
+    return getQueryParam(param) || getQueryParam(underParam);
+  };
+
   const getTinyLink = (oriLink, baseUrl) => {
     const params = {
       ori_link: oriLink,
     };
-    const oneTime = getQueryParam('one_time');
+    const oneTime = getQueryParamUltimate('oneTime');
     if (oneTime === '1') {
       Object.assign(params, { one_time: true });
     }
