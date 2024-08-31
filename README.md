@@ -1,15 +1,21 @@
 # webpack-build-demo
 
-A Demo.
+Not just a demo.
 
-## Install
+## Deploy
 
 ```bash
 git clone https://github.com/mazeyqian/webpack-build-demo.git polestar
 ```
 
-## Update
+## Contributing
 
-```bash
-cd /web/i.mazey.net/polestar && git pull
-```
+### Development Environment
+
+| Dependency | Version  |
+|------------|----------|
+| Node.js    | v14.21.3 |
+
+## License
+
+This software is released under the terms of the [GPL-2.0 license](https://github.com/mazeyqian/webpack-build-demo/blob/main/LICENSE).
