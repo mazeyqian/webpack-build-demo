@@ -30,6 +30,7 @@ src/
 *.ntvs*
 *.njsproj
 *.sln
+webpack.*.js
 
 # Files
 yarn.lock
